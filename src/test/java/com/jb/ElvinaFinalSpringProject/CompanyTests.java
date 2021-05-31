@@ -25,7 +25,7 @@ import java.util.List;
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class CompanyServiceTests {
+public class CompanyTests {
     private final CompanyRepository companyRepository;
     private final CouponRepository couponRepository;
     private final CompanyController companyController;
@@ -37,7 +37,7 @@ public class CompanyServiceTests {
     private static final List<Coupon> couponTemplates = new ArrayList<>();
 
     @Autowired
-    public CompanyServiceTests(CompanyRepository companyRepository, CouponRepository couponRepository, CompanyController companyController, AdminController adminController) {
+    public CompanyTests(CompanyRepository companyRepository, CouponRepository couponRepository, CompanyController companyController, AdminController adminController) {
         this.companyRepository = companyRepository;
         this.couponRepository = couponRepository;
         this.companyController = companyController;

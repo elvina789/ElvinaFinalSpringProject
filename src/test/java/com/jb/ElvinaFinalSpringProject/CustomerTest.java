@@ -24,7 +24,7 @@ import java.util.List;
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class CustomerServiceTest {
+public class CustomerTest {
     private final CouponRepository couponRepository;
     private final CompanyRepository companyRepository;
     private final CustomerRepository customerRepository;
@@ -38,7 +38,7 @@ public class CustomerServiceTest {
     private static TokenRecord tokenRecord;
 
     @Autowired
-    public CustomerServiceTest(CouponRepository couponRepository, CompanyRepository companyRepository, CustomerRepository customerRepository, AdminController adminController, CompanyController companyController, CustomerController customerController) {
+    public CustomerTest(CouponRepository couponRepository, CompanyRepository companyRepository, CustomerRepository customerRepository, AdminController adminController, CompanyController companyController, CustomerController customerController) {
         this.couponRepository = couponRepository;
         this.companyRepository = companyRepository;
         this.customerRepository = customerRepository;
