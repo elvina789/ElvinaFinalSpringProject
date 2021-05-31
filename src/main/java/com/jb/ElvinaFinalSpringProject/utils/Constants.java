@@ -8,4 +8,5 @@ public class Constants {
     public static final String ADMIN_PASSWORD = "admin";
     public static final int ADMIN_USER_ID = -1;
     public static final String LOCALHOST = "localhost";
+    public static final Integer PORT = 8080;
 }
