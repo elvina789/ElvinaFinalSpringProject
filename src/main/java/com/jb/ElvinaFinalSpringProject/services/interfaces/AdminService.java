@@ -2,7 +2,7 @@ package com.jb.ElvinaFinalSpringProject.services.interfaces;
 
 import com.jb.ElvinaFinalSpringProject.Beans.Company;
 import com.jb.ElvinaFinalSpringProject.Beans.Customer;
-import com.jb.ElvinaFinalSpringProject.Beans.TokenRecord;
+import com.jb.ElvinaFinalSpringProject.Beans.Session;
 import com.jb.ElvinaFinalSpringProject.Exeptions.AdminServiceException;
 import com.jb.ElvinaFinalSpringProject.Exeptions.InvalidCompanyException;
 import com.jb.ElvinaFinalSpringProject.Exeptions.InvalidCustomerException;
@@ -10,7 +10,7 @@ import com.jb.ElvinaFinalSpringProject.Exeptions.InvalidCustomerException;
 import java.util.List;
 
 public interface AdminService {
-    TokenRecord login(String email, String password);
+    Session login(String email, String password);
 
     void logout(String token);
 

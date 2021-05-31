@@ -3,14 +3,14 @@ package com.jb.ElvinaFinalSpringProject.services.interfaces;
 import com.jb.ElvinaFinalSpringProject.Beans.Company;
 import com.jb.ElvinaFinalSpringProject.Beans.Coupon;
 import com.jb.ElvinaFinalSpringProject.Beans.Enums.Category;
-import com.jb.ElvinaFinalSpringProject.Beans.TokenRecord;
+import com.jb.ElvinaFinalSpringProject.Beans.Session;
 import com.jb.ElvinaFinalSpringProject.Exeptions.CompanyServiceException;
 import com.jb.ElvinaFinalSpringProject.Exeptions.InvalidCouponException;
 
 import java.util.List;
 
 public interface CompanyService {
-    TokenRecord login(String email, String password) throws CompanyServiceException;
+    Session login(String email, String password) throws CompanyServiceException;
 
     void logout(String token);
 

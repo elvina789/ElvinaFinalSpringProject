@@ -3,7 +3,7 @@ package com.jb.ElvinaFinalSpringProject.services;
 import com.jb.ElvinaFinalSpringProject.Beans.Company;
 import com.jb.ElvinaFinalSpringProject.Beans.Customer;
 import com.jb.ElvinaFinalSpringProject.Beans.Enums.ClientType;
-import com.jb.ElvinaFinalSpringProject.Beans.TokenRecord;
+import com.jb.ElvinaFinalSpringProject.Beans.Session;
 import com.jb.ElvinaFinalSpringProject.Exeptions.AdminServiceException;
 import com.jb.ElvinaFinalSpringProject.Exeptions.InvalidCompanyException;
 import com.jb.ElvinaFinalSpringProject.Exeptions.InvalidCustomerException;
@@ -39,7 +39,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public TokenRecord login(String email, String password) {
+    public Session login(String email, String password) {
         if (Constants.ADMIN_EMAIL.equals(email) && Constants.ADMIN_PASSWORD.equals(password)) {
             return tokenManager.createTokenRecord(Constants.ADMIN_USER_ID, ClientType.Administrator);
         } else {

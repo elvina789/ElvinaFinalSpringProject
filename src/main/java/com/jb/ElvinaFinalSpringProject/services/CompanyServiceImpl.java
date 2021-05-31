@@ -4,7 +4,7 @@ import com.jb.ElvinaFinalSpringProject.Beans.Company;
 import com.jb.ElvinaFinalSpringProject.Beans.Coupon;
 import com.jb.ElvinaFinalSpringProject.Beans.Enums.Category;
 import com.jb.ElvinaFinalSpringProject.Beans.Enums.ClientType;
-import com.jb.ElvinaFinalSpringProject.Beans.TokenRecord;
+import com.jb.ElvinaFinalSpringProject.Beans.Session;
 import com.jb.ElvinaFinalSpringProject.Exeptions.CompanyServiceException;
 import com.jb.ElvinaFinalSpringProject.Exeptions.InvalidCouponException;
 import com.jb.ElvinaFinalSpringProject.Repositories.CompanyRepository;
@@ -36,7 +36,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public TokenRecord login(String email, String password) throws CompanyServiceException {
+    public Session login(String email, String password) throws CompanyServiceException {
         try {
             Company company = companyRepository.getCompanyByEmailAndPassword(email, password);
             if (company != null) {

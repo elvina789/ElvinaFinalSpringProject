@@ -17,7 +17,7 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TokenRecord {
+public class Session {
     @Id
     @Column(length = 40)
     private String token;

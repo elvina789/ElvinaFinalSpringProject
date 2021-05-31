@@ -1,7 +1,7 @@
 package com.jb.ElvinaFinalSpringProject.security;
 
 import com.jb.ElvinaFinalSpringProject.Beans.Enums.ClientType;
-import com.jb.ElvinaFinalSpringProject.Beans.TokenRecord;
+import com.jb.ElvinaFinalSpringProject.Beans.Session;
 import com.jb.ElvinaFinalSpringProject.Repositories.TokenRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
@@ -23,17 +23,17 @@ public class TokenManagerImpl implements TokenManager {
     }
 
     @Override
-    public TokenRecord createTokenRecord(int beanId, ClientType clientType) {
+    public Session createTokenRecord(int beanId, ClientType clientType) {
         log.info("Registering token of type {} for id {}", beanId, clientType);
         String token = UUID.randomUUID().toString();
         long expirationDate = DateTime.now().plusMinutes(30).getMillis();
-        TokenRecord tokenRecord = TokenRecord.builder()
+        Session session = Session.builder()
                 .token(token)
                 .expirationDate(expirationDate)
                 .beanId(beanId)
                 .clientType(clientType.getId())
                 .build();
-        return tokenRepository.save(tokenRecord);
+        return tokenRepository.save(session);
     }
 
     @Override
@@ -42,16 +42,16 @@ public class TokenManagerImpl implements TokenManager {
     }
 
     @Override
-    public TokenRecord getTokenRecord(String token) {
+    public Session getTokenRecord(String token) {
         return tokenRepository.getOne(token);
     }
 
     @Override
     public boolean validateToken(String token, ClientType clientType) {
         if (tokenRepository.existsById(token)) {
-            TokenRecord tokenRecord = tokenRepository.getOne(token);
-            return clientType.getId() == tokenRecord.getClientType() &&
-                    DateTime.now().getMillis() <= tokenRecord.getExpirationDate();
+            Session session = tokenRepository.getOne(token);
+            return clientType.getId() == session.getClientType() &&
+                    DateTime.now().getMillis() <= session.getExpirationDate();
         }
         return false;
     }

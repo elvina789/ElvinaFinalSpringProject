@@ -3,7 +3,7 @@ package com.jb.ElvinaFinalSpringProject;
 import com.jb.ElvinaFinalSpringProject.Beans.Company;
 import com.jb.ElvinaFinalSpringProject.Beans.Customer;
 import com.jb.ElvinaFinalSpringProject.Beans.LoginCredentials;
-import com.jb.ElvinaFinalSpringProject.Beans.TokenRecord;
+import com.jb.ElvinaFinalSpringProject.Beans.Session;
 import com.jb.ElvinaFinalSpringProject.Repositories.CompanyRepository;
 import com.jb.ElvinaFinalSpringProject.Repositories.CustomerRepository;
 import com.jb.ElvinaFinalSpringProject.controller.AdminController;
@@ -29,7 +29,7 @@ class AdminTests {
     private final AdminController adminController;
 
     // Common data must be static
-    private static TokenRecord tokenRecord;
+    private static Session session;
     private static final List<Company> companyTemplates = new ArrayList<>();
     private static final List<Customer> customerTemplates = new ArrayList<>();
 
@@ -70,27 +70,33 @@ class AdminTests {
         log.info("Actual response status {}", response.getStatusCode());
         log.info("Actual response body {}", response.getBody());
         Assert.isTrue(response.getStatusCode().equals(expected), "Status returned not as expected");
-        tokenRecord = (TokenRecord) response.getBody();
-        Assert.notNull(tokenRecord, "Admin token record returned null");
-        Assert.notNull(tokenRecord.getToken(), "Token record has no token");
+        session = (Session) response.getBody();
+        Assert.notNull(session, "Admin token record returned null");
+        Assert.notNull(session.getToken(), "Token record has no token");
     }
 
     @Test
     @Order(1)
     void loginTestIncorrectCredentials() {
+        HttpStatus expectedStatus = HttpStatus.OK;
+        String expectedBody = "Incorrect email or password";
+        log.info("Expected:");
+        log.info("Expected response status {}", expectedStatus);
+        log.info("Expected response body {}", expectedBody);
+        log.info("Actual:");
         LoginCredentials credentials = LoginCredentials.builder().email("admin2@admin.com").password("admin2").build();
         ResponseEntity<?> response = adminController.login(credentials);
-        log.info("Returned response status {}", response.getStatusCode());
-        log.info("Returned response body {}", response.getBody());
-        Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
-        Assert.isTrue("Incorrect email or password".equals(response.getBody()));
+        log.info("Actual response status {}", response.getStatusCode());
+        log.info("Actual response body {}", response.getBody());
+        Assert.isTrue(response.getStatusCode().equals(expectedStatus), "Status returned not as expectedStatus");
+        Assert.isTrue(expectedBody.equals(response.getBody()), "Body returned not as expected");
     }
 
     @Test
     @Order(2)
     void addCompanyTest() {
         for (Company company : companyTemplates) {
-            adminController.addCompany(tokenRecord.getToken(), company);
+            adminController.addCompany(session.getToken(), company);
             log.info("Created company {}", company);
         }
     }
@@ -100,7 +106,7 @@ class AdminTests {
     void getCompanyOneTest() {
         int id = companyTemplates.get(0).getId();
         log.info("Testing get company with company id - {}", id);
-        ResponseEntity<?> response = adminController.getOneCompany(tokenRecord.getToken(), id);
+        ResponseEntity<?> response = adminController.getOneCompany(session.getToken(), id);
         Assert.isTrue(response.getStatusCode().equals(HttpStatus.FOUND), "Status returned not as expected");
         Company company = (Company) response.getBody();
         log.info("The following company returned {}", company);
@@ -113,9 +119,9 @@ class AdminTests {
     void deleteCompanyTest() {
         int id = companyTemplates.get(0).getId();
         log.info("Testing delete company with company id - {}", id);
-        ResponseEntity<?> deleteResponse = adminController.deleteCompany(tokenRecord.getToken(), id);
+        ResponseEntity<?> deleteResponse = adminController.deleteCompany(session.getToken(), id);
         Assert.isTrue(deleteResponse.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
-        ResponseEntity<?> getResponse = adminController.getOneCompany(tokenRecord.getToken(), id);
+        ResponseEntity<?> getResponse = adminController.getOneCompany(session.getToken(), id);
         Assert.isTrue(getResponse.getStatusCode().equals(HttpStatus.NOT_FOUND), "Status returned not as expected");
     }
 
@@ -126,9 +132,9 @@ class AdminTests {
         String newEmail = "updated@updated.com";
         log.info("Company before update {}", company);
         company.setEmail(newEmail);
-        ResponseEntity<?> updateResponse = adminController.updateCompany(tokenRecord.getToken(), company);
+        ResponseEntity<?> updateResponse = adminController.updateCompany(session.getToken(), company);
         Assert.isTrue(updateResponse.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
-        ResponseEntity<?> getResponse = adminController.getOneCompany(tokenRecord.getToken(), company.getId());
+        ResponseEntity<?> getResponse = adminController.getOneCompany(session.getToken(), company.getId());
         Assert.isTrue(getResponse.getStatusCode().equals(HttpStatus.FOUND), "Status returned not as expected");
         Company companyAfterUpdate = (Company) getResponse.getBody();
         log.info("Company after update {}", companyAfterUpdate);
@@ -140,7 +146,7 @@ class AdminTests {
     @Test
     @Order(6)
     void getAllCompaniesTest() {
-        ResponseEntity<?> response = adminController.getAllCompanies(tokenRecord.getToken());
+        ResponseEntity<?> response = adminController.getAllCompanies(session.getToken());
         Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
         List<Company> companies = (List<Company>) response.getBody();
         Assert.notNull(companies, "Companies list returned as null");
@@ -151,7 +157,7 @@ class AdminTests {
     @Order(7)
     void addCustomerTest() {
         for (Customer customer : customerTemplates) {
-            ResponseEntity<?> response = adminController.addCustomer(tokenRecord.getToken(), customer);
+            ResponseEntity<?> response = adminController.addCustomer(session.getToken(), customer);
             Assert.isTrue(response.getStatusCode().equals(HttpStatus.CREATED), "Status returned not as expected");
             log.info("Created customer {}", customer);
         }
@@ -162,7 +168,7 @@ class AdminTests {
     void getCustomerOneTest() {
         int id = customerTemplates.get(0).getId();
         log.info("Testing get customer with id - {}", id);
-        ResponseEntity<?> response = adminController.getOneCustomer(tokenRecord.getToken(), id);
+        ResponseEntity<?> response = adminController.getOneCustomer(session.getToken(), id);
         Assert.isTrue(response.getStatusCode().equals(HttpStatus.FOUND), "Status returned not as expected");
         Customer customer = (Customer) response.getBody();
         Assert.notNull(customer, "Customer returned as null");
@@ -174,9 +180,9 @@ class AdminTests {
     void deleteCustomerTest() {
         int id = customerTemplates.get(0).getId();
         log.info("Testing delete customer with id - {}", id);
-        ResponseEntity<?> response = adminController.deleteCustomer(tokenRecord.getToken(), id);
+        ResponseEntity<?> response = adminController.deleteCustomer(session.getToken(), id);
         Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
-        ResponseEntity<?> responseAfterDelete = adminController.getOneCustomer(tokenRecord.getToken(), id);
+        ResponseEntity<?> responseAfterDelete = adminController.getOneCustomer(session.getToken(), id);
         Assert.isTrue(responseAfterDelete.getStatusCode().equals(HttpStatus.NOT_FOUND), "Status returned not as expected");
     }
 
@@ -186,9 +192,9 @@ class AdminTests {
         Customer customer = customerTemplates.get(1);
         String newPassword = "newPassword";
         customer.setPassword(newPassword);
-        ResponseEntity<?> updateResponse = adminController.updateCustomer(tokenRecord.getToken(), customer);
+        ResponseEntity<?> updateResponse = adminController.updateCustomer(session.getToken(), customer);
         Assert.isTrue(updateResponse.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
-        ResponseEntity<?> getResponse = adminController.getOneCustomer(tokenRecord.getToken(), customer.getId());
+        ResponseEntity<?> getResponse = adminController.getOneCustomer(session.getToken(), customer.getId());
         Assert.isTrue(getResponse.getStatusCode().equals(HttpStatus.FOUND), "Status returned not as expected");
         Customer customerAfterUpdate = (Customer) getResponse.getBody();
         Assert.isTrue(newPassword.equals(customerAfterUpdate.getPassword()), "The update of password failed");
@@ -197,7 +203,7 @@ class AdminTests {
     @Test
     @Order(11)
     void getAllCustomersTest() {
-        ResponseEntity<?> response = adminController.getAllCustomers(tokenRecord.getToken());
+        ResponseEntity<?> response = adminController.getAllCustomers(session.getToken());
         Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
         List<Customer> customers = (List<Customer>) response.getBody();
         Assert.notNull(customers, "Customers list returned as null");
@@ -207,21 +213,21 @@ class AdminTests {
     @Test
     @Order(12)
     void startCleaningJob() {
-        ResponseEntity<?> response = adminController.startCleaningJob(tokenRecord.getToken());
+        ResponseEntity<?> response = adminController.startCleaningJob(session.getToken());
         Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
     }
 
     @Test
     @Order(13)
     void stopCleaningJob() {
-        ResponseEntity<?> response = adminController.stopCleaningJob(tokenRecord.getToken());
+        ResponseEntity<?> response = adminController.stopCleaningJob(session.getToken());
         Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
     }
 
     @Test
     @Order(14)
     void logOut() {
-        ResponseEntity<?> response = adminController.logout(tokenRecord.getToken());
+        ResponseEntity<?> response = adminController.logout(session.getToken());
         Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
     }
 }

@@ -27,7 +27,8 @@ public class ScheduledTaskManagerImpl implements ScheduledTaskManager {
             try {
                 if (cleanExpiredCoupons) {
                     log.info("Performing cleaning of expired coupons");
-                    couponRepository.deleteByEndDateBefore(new Date(DateTime.now().getMillis()));
+                    Date currentDate = new Date(DateTime.now().getMillis());
+                    couponRepository.deleteByEndDateBefore(currentDate);
                 }
             } catch (Exception e) {
                 log.error("Something gone wrong during expired records cleanup, error - {}", e.getMessage());

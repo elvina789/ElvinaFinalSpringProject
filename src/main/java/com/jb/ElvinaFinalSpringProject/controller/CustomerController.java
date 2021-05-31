@@ -5,7 +5,7 @@ import com.jb.ElvinaFinalSpringProject.Beans.Customer;
 import com.jb.ElvinaFinalSpringProject.Beans.Enums.Category;
 import com.jb.ElvinaFinalSpringProject.Beans.Enums.ClientType;
 import com.jb.ElvinaFinalSpringProject.Beans.LoginCredentials;
-import com.jb.ElvinaFinalSpringProject.Beans.TokenRecord;
+import com.jb.ElvinaFinalSpringProject.Beans.Session;
 import com.jb.ElvinaFinalSpringProject.Login.LoginManager;
 import com.jb.ElvinaFinalSpringProject.security.TokenManager;
 import com.jb.ElvinaFinalSpringProject.services.interfaces.CustomerService;
@@ -33,9 +33,9 @@ public class CustomerController {
     @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody LoginCredentials credentials) {
         try {
-            TokenRecord tokenRecord = loginManager.login(credentials.getEmail(), credentials.getPassword(), ClientType.Customer);
-            if (tokenRecord != null) {
-                return new ResponseEntity<>(tokenRecord, HttpStatus.OK);
+            Session session = loginManager.login(credentials.getEmail(), credentials.getPassword(), ClientType.Customer);
+            if (session != null) {
+                return new ResponseEntity<>(session, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Incorrect email or password", HttpStatus.OK);
             }
@@ -62,8 +62,8 @@ public class CustomerController {
     public ResponseEntity<?> purchaseCoupon(@RequestHeader("Authorization") String token, @RequestBody Coupon coupon) {
         try {
             if (tokenManager.validateToken(token, ClientType.Customer)) {
-                TokenRecord tokenRecord = tokenManager.getTokenRecord(token);
-                customerService.purchaseCoupon(tokenRecord.getBeanId(), coupon);
+                Session session = tokenManager.getTokenRecord(token);
+                customerService.purchaseCoupon(session.getBeanId(), coupon);
                 return new ResponseEntity<>(coupon, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Invalid token", HttpStatus.UNAUTHORIZED);
@@ -77,8 +77,8 @@ public class CustomerController {
     public ResponseEntity<?> getCustomerCoupons(@RequestHeader("Authorization") String token) {
         try {
             if (tokenManager.validateToken(token, ClientType.Customer)) {
-                TokenRecord tokenRecord = tokenManager.getTokenRecord(token);
-                List<Coupon> customerCoupons = customerService.getCustomerCoupons(tokenRecord.getBeanId());
+                Session session = tokenManager.getTokenRecord(token);
+                List<Coupon> customerCoupons = customerService.getCustomerCoupons(session.getBeanId());
                 return new ResponseEntity<>(customerCoupons, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Invalid token", HttpStatus.UNAUTHORIZED);
@@ -92,8 +92,8 @@ public class CustomerController {
     public ResponseEntity<?> getCustomerCouponsByMaxPrice(@RequestHeader("Authorization") String token, @RequestParam double maxPrice) {
         try {
             if (tokenManager.validateToken(token, ClientType.Customer)) {
-                TokenRecord tokenRecord = tokenManager.getTokenRecord(token);
-                List<Coupon> customerCoupons = customerService.getCustomerCoupons(tokenRecord.getBeanId(), maxPrice);
+                Session session = tokenManager.getTokenRecord(token);
+                List<Coupon> customerCoupons = customerService.getCustomerCoupons(session.getBeanId(), maxPrice);
                 return new ResponseEntity<>(customerCoupons, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Invalid token", HttpStatus.UNAUTHORIZED);
@@ -107,8 +107,8 @@ public class CustomerController {
     public ResponseEntity<?> getCustomerCouponsByCategory(@RequestHeader("Authorization") String token, @RequestParam int categoryId) {
         try {
             if (tokenManager.validateToken(token, ClientType.Customer)) {
-                TokenRecord tokenRecord = tokenManager.getTokenRecord(token);
-                List<Coupon> customerCoupons = customerService.getCustomerCoupons(tokenRecord.getBeanId(), Category.idToCategory(categoryId));
+                Session session = tokenManager.getTokenRecord(token);
+                List<Coupon> customerCoupons = customerService.getCustomerCoupons(session.getBeanId(), Category.idToCategory(categoryId));
                 return new ResponseEntity<>(customerCoupons, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Invalid token", HttpStatus.UNAUTHORIZED);
@@ -122,8 +122,8 @@ public class CustomerController {
     public ResponseEntity<?> getCustomerDetails(@RequestHeader("Authorization") String token) {
         try {
             if (tokenManager.validateToken(token, ClientType.Customer)) {
-                TokenRecord tokenRecord = tokenManager.getTokenRecord(token);
-                Customer customer = customerService.getCustomerDetails(tokenRecord.getBeanId());
+                Session session = tokenManager.getTokenRecord(token);
+                Customer customer = customerService.getCustomerDetails(session.getBeanId());
                 return new ResponseEntity<>(customer, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("Invalid token", HttpStatus.UNAUTHORIZED);

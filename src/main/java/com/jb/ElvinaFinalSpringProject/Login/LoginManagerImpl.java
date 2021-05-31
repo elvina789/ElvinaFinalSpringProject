@@ -1,7 +1,7 @@
 package com.jb.ElvinaFinalSpringProject.Login;
 
 import com.jb.ElvinaFinalSpringProject.Beans.Enums.ClientType;
-import com.jb.ElvinaFinalSpringProject.Beans.TokenRecord;
+import com.jb.ElvinaFinalSpringProject.Beans.Session;
 import com.jb.ElvinaFinalSpringProject.Exeptions.LoginManagerException;
 import com.jb.ElvinaFinalSpringProject.services.interfaces.AdminService;
 import com.jb.ElvinaFinalSpringProject.services.interfaces.CompanyService;
@@ -20,7 +20,7 @@ public class LoginManagerImpl implements LoginManager {
     }
 
     @Override
-    public TokenRecord login(String email, String password, ClientType clientType) throws LoginManagerException {
+    public Session login(String email, String password, ClientType clientType) throws LoginManagerException {
         try {
             switch (clientType) {
                 case Company:

@@ -4,7 +4,7 @@ import com.jb.ElvinaFinalSpringProject.Beans.Coupon;
 import com.jb.ElvinaFinalSpringProject.Beans.Customer;
 import com.jb.ElvinaFinalSpringProject.Beans.Enums.Category;
 import com.jb.ElvinaFinalSpringProject.Beans.Enums.ClientType;
-import com.jb.ElvinaFinalSpringProject.Beans.TokenRecord;
+import com.jb.ElvinaFinalSpringProject.Beans.Session;
 import com.jb.ElvinaFinalSpringProject.Exeptions.CustomerServiceException;
 import com.jb.ElvinaFinalSpringProject.Exeptions.InvalidCouponException;
 import com.jb.ElvinaFinalSpringProject.Repositories.CompanyRepository;
@@ -40,7 +40,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public TokenRecord login(String email, String password) throws CustomerServiceException {
+    public Session login(String email, String password) throws CustomerServiceException {
         try {
             Customer customer = customerRepository.getCustomerByEmailAndPassword(email, password);
             if (customer != null) {
