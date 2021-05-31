@@ -36,7 +36,7 @@ public class CompanyController {
             TokenRecord tokenRecord = loginManager.login(credentials.getEmail(), credentials.getPassword(), ClientType.Company);
             return new ResponseEntity<>(tokenRecord, HttpStatus.OK);
         } catch (Throwable t) {
-            return new ResponseEntity<>(t.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(t.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -50,7 +50,7 @@ public class CompanyController {
                 return new ResponseEntity<>("Invalid token", HttpStatus.UNAUTHORIZED);
             }
         } catch (Throwable t) {
-            return new ResponseEntity<>(t.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(t.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
