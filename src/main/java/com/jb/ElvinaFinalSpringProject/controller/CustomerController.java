@@ -7,7 +7,7 @@ import com.jb.ElvinaFinalSpringProject.Beans.Enums.ClientType;
 import com.jb.ElvinaFinalSpringProject.Beans.LoginCredentials;
 import com.jb.ElvinaFinalSpringProject.Beans.Session;
 import com.jb.ElvinaFinalSpringProject.Login.LoginManager;
-import com.jb.ElvinaFinalSpringProject.security.TokenManager;
+import com.jb.ElvinaFinalSpringProject.security.SessionManager;
 import com.jb.ElvinaFinalSpringProject.services.interfaces.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,13 +21,13 @@ import java.util.List;
 public class CustomerController {
     private final CustomerService customerService;
     private final LoginManager loginManager;
-    private final TokenManager tokenManager;
+    private final SessionManager sessionManager;
 
     @Autowired
-    public CustomerController(CustomerService customerService, LoginManager loginManager, TokenManager tokenManager) {
+    public CustomerController(CustomerService customerService, LoginManager loginManager, SessionManager sessionManager) {
         this.customerService = customerService;
         this.loginManager = loginManager;
-        this.tokenManager = tokenManager;
+        this.sessionManager = sessionManager;
     }
 
     @PostMapping("login")
@@ -47,7 +47,7 @@ public class CustomerController {
     @PostMapping("logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Customer)) {
+            if (sessionManager.validateToken(token, ClientType.Customer)) {
                 loginManager.logout(token, ClientType.Customer);
                 return new ResponseEntity<>("Successfully logged out", HttpStatus.OK);
             } else {
@@ -61,8 +61,8 @@ public class CustomerController {
     @PostMapping("purchase")
     public ResponseEntity<?> purchaseCoupon(@RequestHeader("Authorization") String token, @RequestBody Coupon coupon) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Customer)) {
-                Session session = tokenManager.getTokenRecord(token);
+            if (sessionManager.validateToken(token, ClientType.Customer)) {
+                Session session = sessionManager.getSession(token);
                 customerService.purchaseCoupon(session.getBeanId(), coupon);
                 return new ResponseEntity<>(coupon, HttpStatus.OK);
             } else {
@@ -76,8 +76,8 @@ public class CustomerController {
     @GetMapping("coupons")
     public ResponseEntity<?> getCustomerCoupons(@RequestHeader("Authorization") String token) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Customer)) {
-                Session session = tokenManager.getTokenRecord(token);
+            if (sessionManager.validateToken(token, ClientType.Customer)) {
+                Session session = sessionManager.getSession(token);
                 List<Coupon> customerCoupons = customerService.getCustomerCoupons(session.getBeanId());
                 return new ResponseEntity<>(customerCoupons, HttpStatus.OK);
             } else {
@@ -91,8 +91,8 @@ public class CustomerController {
     @GetMapping(name = "coupons", params = "maxPrice")
     public ResponseEntity<?> getCustomerCouponsByMaxPrice(@RequestHeader("Authorization") String token, @RequestParam double maxPrice) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Customer)) {
-                Session session = tokenManager.getTokenRecord(token);
+            if (sessionManager.validateToken(token, ClientType.Customer)) {
+                Session session = sessionManager.getSession(token);
                 List<Coupon> customerCoupons = customerService.getCustomerCoupons(session.getBeanId(), maxPrice);
                 return new ResponseEntity<>(customerCoupons, HttpStatus.OK);
             } else {
@@ -106,8 +106,8 @@ public class CustomerController {
     @GetMapping(name = "coupons", params = "category")
     public ResponseEntity<?> getCustomerCouponsByCategory(@RequestHeader("Authorization") String token, @RequestParam int categoryId) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Customer)) {
-                Session session = tokenManager.getTokenRecord(token);
+            if (sessionManager.validateToken(token, ClientType.Customer)) {
+                Session session = sessionManager.getSession(token);
                 List<Coupon> customerCoupons = customerService.getCustomerCoupons(session.getBeanId(), Category.idToCategory(categoryId));
                 return new ResponseEntity<>(customerCoupons, HttpStatus.OK);
             } else {
@@ -121,8 +121,8 @@ public class CustomerController {
     @GetMapping("details")
     public ResponseEntity<?> getCustomerDetails(@RequestHeader("Authorization") String token) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Customer)) {
-                Session session = tokenManager.getTokenRecord(token);
+            if (sessionManager.validateToken(token, ClientType.Customer)) {
+                Session session = sessionManager.getSession(token);
                 Customer customer = customerService.getCustomerDetails(session.getBeanId());
                 return new ResponseEntity<>(customer, HttpStatus.OK);
             } else {

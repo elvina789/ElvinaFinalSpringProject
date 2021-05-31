@@ -9,7 +9,7 @@ import com.jb.ElvinaFinalSpringProject.Exeptions.CompanyServiceException;
 import com.jb.ElvinaFinalSpringProject.Exeptions.InvalidCouponException;
 import com.jb.ElvinaFinalSpringProject.Repositories.CompanyRepository;
 import com.jb.ElvinaFinalSpringProject.Repositories.CouponRepository;
-import com.jb.ElvinaFinalSpringProject.security.TokenManager;
+import com.jb.ElvinaFinalSpringProject.security.SessionManager;
 import com.jb.ElvinaFinalSpringProject.services.interfaces.CompanyService;
 import com.jb.ElvinaFinalSpringProject.validation.BeanValidator;
 import lombok.extern.slf4j.Slf4j;
@@ -24,15 +24,15 @@ public class CompanyServiceImpl implements CompanyService {
     private final BeanValidator beanValidator;
     private final CompanyRepository companyRepository;
     private final CouponRepository couponRepository;
-    private final TokenManager tokenManager;
+    private final SessionManager sessionManager;
 
 
     @Autowired
-    public CompanyServiceImpl(BeanValidator beanValidator, CompanyRepository companyRepository, CouponRepository couponRepository, TokenManager tokenManager) {
+    public CompanyServiceImpl(BeanValidator beanValidator, CompanyRepository companyRepository, CouponRepository couponRepository, SessionManager sessionManager) {
         this.beanValidator = beanValidator;
         this.companyRepository = companyRepository;
         this.couponRepository = couponRepository;
-        this.tokenManager = tokenManager;
+        this.sessionManager = sessionManager;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class CompanyServiceImpl implements CompanyService {
         try {
             Company company = companyRepository.getCompanyByEmailAndPassword(email, password);
             if (company != null) {
-                return tokenManager.createTokenRecord(company.getId(), ClientType.Company);
+                return sessionManager.createSession(company.getId(), ClientType.Company);
             }
             return null;
         } catch (RuntimeException e) {
@@ -50,7 +50,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public void logout(String token) {
-        tokenManager.deleteTokenRecord(token);
+        sessionManager.deleteSession(token);
     }
 
     @Override

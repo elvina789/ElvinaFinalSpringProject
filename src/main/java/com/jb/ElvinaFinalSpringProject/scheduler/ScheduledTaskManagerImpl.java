@@ -1,7 +1,7 @@
 package com.jb.ElvinaFinalSpringProject.scheduler;
 
 import com.jb.ElvinaFinalSpringProject.Repositories.CouponRepository;
-import com.jb.ElvinaFinalSpringProject.Repositories.TokenRepository;
+import com.jb.ElvinaFinalSpringProject.Repositories.SessionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ public class ScheduledTaskManagerImpl implements ScheduledTaskManager {
     private final CouponRepository couponRepository;
     private boolean cleanExpiredCoupons;
 
-    public ScheduledTaskManagerImpl(TokenRepository tokenRepository, CouponRepository couponRepository) {
+    public ScheduledTaskManagerImpl(SessionRepository sessionRepository, CouponRepository couponRepository) {
         this.couponRepository = couponRepository;
         this.cleanExpiredCoupons = true;
         Thread cleanExpiredCouponsThread = new Thread(this::clearExpiredCoupons);

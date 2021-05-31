@@ -7,7 +7,7 @@ import com.jb.ElvinaFinalSpringProject.Beans.LoginCredentials;
 import com.jb.ElvinaFinalSpringProject.Beans.Session;
 import com.jb.ElvinaFinalSpringProject.Login.LoginManager;
 import com.jb.ElvinaFinalSpringProject.scheduler.ScheduledTaskManager;
-import com.jb.ElvinaFinalSpringProject.security.TokenManager;
+import com.jb.ElvinaFinalSpringProject.security.SessionManager;
 import com.jb.ElvinaFinalSpringProject.services.interfaces.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,14 +21,14 @@ import java.util.List;
 public class AdminController {
     private final AdminService adminService;
     private final LoginManager loginManager;
-    private final TokenManager tokenManager;
+    private final SessionManager sessionManager;
     private final ScheduledTaskManager scheduledTaskManager;
 
     @Autowired
-    public AdminController(AdminService adminService, LoginManager loginManager, TokenManager tokenManager, ScheduledTaskManager scheduledTaskManager) {
+    public AdminController(AdminService adminService, LoginManager loginManager, SessionManager sessionManager, ScheduledTaskManager scheduledTaskManager) {
         this.adminService = adminService;
         this.loginManager = loginManager;
-        this.tokenManager = tokenManager;
+        this.sessionManager = sessionManager;
         this.scheduledTaskManager = scheduledTaskManager;
     }
 
@@ -49,7 +49,7 @@ public class AdminController {
     @PostMapping("logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Administrator)) {
+            if (sessionManager.validateToken(token, ClientType.Administrator)) {
                 loginManager.logout(token, ClientType.Administrator);
                 return new ResponseEntity<>("Successfully logged out", HttpStatus.OK);
             } else {
@@ -63,7 +63,7 @@ public class AdminController {
     @PostMapping("customer")
     public ResponseEntity<?> addCustomer(@RequestHeader("Authorization") String token, @RequestBody Customer customer) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Administrator)) {
+            if (sessionManager.validateToken(token, ClientType.Administrator)) {
                 adminService.addCustomer(customer);
                 return new ResponseEntity<>(customer, HttpStatus.CREATED);
             } else {
@@ -77,7 +77,7 @@ public class AdminController {
     @PutMapping("customer")
     public ResponseEntity<?> updateCustomer(@RequestHeader("Authorization") String token, @RequestBody Customer customer) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Administrator)) {
+            if (sessionManager.validateToken(token, ClientType.Administrator)) {
                 adminService.updateCustomer(customer);
                 return new ResponseEntity<>(customer, HttpStatus.OK);
             } else {
@@ -91,7 +91,7 @@ public class AdminController {
     @GetMapping("customer/{id}")
     public ResponseEntity<?> getOneCustomer(@RequestHeader("Authorization") String token, @PathVariable Integer id) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Administrator)) {
+            if (sessionManager.validateToken(token, ClientType.Administrator)) {
                 Customer customer = adminService.getOneCustomer(id);
                 if (customer == null) {
                     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -109,7 +109,7 @@ public class AdminController {
     @DeleteMapping("customer/{id}")
     public ResponseEntity<?> deleteCustomer(@RequestHeader("Authorization") String token, @PathVariable Integer id) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Administrator)) {
+            if (sessionManager.validateToken(token, ClientType.Administrator)) {
                 adminService.deleteCustomer(id);
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
@@ -123,7 +123,7 @@ public class AdminController {
     @DeleteMapping("customers")
     public ResponseEntity<?> getAllCustomers(@RequestHeader("Authorization") String token) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Administrator)) {
+            if (sessionManager.validateToken(token, ClientType.Administrator)) {
                 List<Customer> companies = adminService.getAllCustomers();
                 return new ResponseEntity<>(companies, HttpStatus.OK);
             } else {
@@ -137,7 +137,7 @@ public class AdminController {
     @PostMapping("company")
     public ResponseEntity<?> addCompany(@RequestHeader("Authorization") String token, @RequestBody Company company) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Administrator)) {
+            if (sessionManager.validateToken(token, ClientType.Administrator)) {
                 adminService.addCompany(company);
                 return new ResponseEntity<>(company, HttpStatus.CREATED);
             } else {
@@ -151,7 +151,7 @@ public class AdminController {
     @PutMapping("company")
     public ResponseEntity<?> updateCompany(@RequestHeader("Authorization") String token, @RequestBody Company company) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Administrator)) {
+            if (sessionManager.validateToken(token, ClientType.Administrator)) {
                 adminService.updateCompany(company);
                 return new ResponseEntity<>(company, HttpStatus.OK);
             } else {
@@ -165,7 +165,7 @@ public class AdminController {
     @GetMapping("company/{id}")
     public ResponseEntity<?> getOneCompany(@RequestHeader("Authorization") String token, @PathVariable Integer id) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Administrator)) {
+            if (sessionManager.validateToken(token, ClientType.Administrator)) {
                 Company company = adminService.getOneCompany(id);
                 if (company == null) {
                     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -183,7 +183,7 @@ public class AdminController {
     @DeleteMapping("company/{id}")
     public ResponseEntity<?> deleteCompany(@RequestHeader("Authorization") String token, @PathVariable Integer id) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Administrator)) {
+            if (sessionManager.validateToken(token, ClientType.Administrator)) {
                 adminService.deleteCompany(id);
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
@@ -197,7 +197,7 @@ public class AdminController {
     @DeleteMapping("companies")
     public ResponseEntity<?> getAllCompanies(@RequestHeader("Authorization") String token) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Administrator)) {
+            if (sessionManager.validateToken(token, ClientType.Administrator)) {
                 List<Company> companies = adminService.getAllCompanies();
                 return new ResponseEntity<>(companies, HttpStatus.OK);
             } else {
@@ -211,7 +211,7 @@ public class AdminController {
     @PostMapping("cleaning/start")
     public ResponseEntity<?> startCleaningJob(@RequestHeader("Authorization") String token) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Administrator)) {
+            if (sessionManager.validateToken(token, ClientType.Administrator)) {
                 scheduledTaskManager.startExpiredCouponDailyClean();
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
@@ -225,7 +225,7 @@ public class AdminController {
     @PostMapping("cleaning/stop")
     public ResponseEntity<?> stopCleaningJob(@RequestHeader("Authorization") String token) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Administrator)) {
+            if (sessionManager.validateToken(token, ClientType.Administrator)) {
                 scheduledTaskManager.stopExpiredCouponDailyClean();
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {

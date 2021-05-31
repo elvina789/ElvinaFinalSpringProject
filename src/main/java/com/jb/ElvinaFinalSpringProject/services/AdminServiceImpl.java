@@ -10,7 +10,7 @@ import com.jb.ElvinaFinalSpringProject.Exeptions.InvalidCustomerException;
 import com.jb.ElvinaFinalSpringProject.Repositories.CompanyRepository;
 import com.jb.ElvinaFinalSpringProject.Repositories.CouponRepository;
 import com.jb.ElvinaFinalSpringProject.Repositories.CustomerRepository;
-import com.jb.ElvinaFinalSpringProject.security.TokenManager;
+import com.jb.ElvinaFinalSpringProject.security.SessionManager;
 import com.jb.ElvinaFinalSpringProject.services.interfaces.AdminService;
 import com.jb.ElvinaFinalSpringProject.utils.Constants;
 import com.jb.ElvinaFinalSpringProject.validation.BeanValidator;
@@ -27,21 +27,21 @@ public class AdminServiceImpl implements AdminService {
     private final CompanyRepository companyRepository;
     private final CustomerRepository customerRepository;
     private final CouponRepository couponRepository;
-    private final TokenManager tokenManager;
+    private final SessionManager sessionManager;
 
     @Autowired
-    public AdminServiceImpl(BeanValidator beanValidator, CompanyRepository companyRepository, CustomerRepository customerRepository, CouponRepository couponRepository, TokenManager tokenManager) {
+    public AdminServiceImpl(BeanValidator beanValidator, CompanyRepository companyRepository, CustomerRepository customerRepository, CouponRepository couponRepository, SessionManager sessionManager) {
         this.beanValidator = beanValidator;
         this.companyRepository = companyRepository;
         this.customerRepository = customerRepository;
         this.couponRepository = couponRepository;
-        this.tokenManager = tokenManager;
+        this.sessionManager = sessionManager;
     }
 
     @Override
     public Session login(String email, String password) {
         if (Constants.ADMIN_EMAIL.equals(email) && Constants.ADMIN_PASSWORD.equals(password)) {
-            return tokenManager.createTokenRecord(Constants.ADMIN_USER_ID, ClientType.Administrator);
+            return sessionManager.createSession(Constants.ADMIN_USER_ID, ClientType.Administrator);
         } else {
             return null;
         }
@@ -49,7 +49,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void logout(String token) {
-        tokenManager.deleteTokenRecord(token);
+        sessionManager.deleteSession(token);
     }
 
     @Override

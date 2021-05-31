@@ -10,7 +10,7 @@ import com.jb.ElvinaFinalSpringProject.Exeptions.InvalidCouponException;
 import com.jb.ElvinaFinalSpringProject.Repositories.CompanyRepository;
 import com.jb.ElvinaFinalSpringProject.Repositories.CouponRepository;
 import com.jb.ElvinaFinalSpringProject.Repositories.CustomerRepository;
-import com.jb.ElvinaFinalSpringProject.security.TokenManager;
+import com.jb.ElvinaFinalSpringProject.security.SessionManager;
 import com.jb.ElvinaFinalSpringProject.services.interfaces.CustomerService;
 import com.jb.ElvinaFinalSpringProject.validation.BeanValidator;
 import lombok.extern.slf4j.Slf4j;
@@ -28,15 +28,15 @@ public class CustomerServiceImpl implements CustomerService {
     private final CompanyRepository companyRepository;
     private final CustomerRepository customerRepository;
     private final CouponRepository couponRepository;
-    private final TokenManager tokenManager;
+    private final SessionManager sessionManager;
 
     @Autowired
-    public CustomerServiceImpl(BeanValidator beanValidator, CompanyRepository companyRepository, CustomerRepository customerRepository, CouponRepository couponRepository, TokenManager tokenManager) {
+    public CustomerServiceImpl(BeanValidator beanValidator, CompanyRepository companyRepository, CustomerRepository customerRepository, CouponRepository couponRepository, SessionManager sessionManager) {
         this.beanValidator = beanValidator;
         this.companyRepository = companyRepository;
         this.customerRepository = customerRepository;
         this.couponRepository = couponRepository;
-        this.tokenManager = tokenManager;
+        this.sessionManager = sessionManager;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class CustomerServiceImpl implements CustomerService {
         try {
             Customer customer = customerRepository.getCustomerByEmailAndPassword(email, password);
             if (customer != null) {
-                return tokenManager.createTokenRecord(customer.getId(), ClientType.Customer);
+                return sessionManager.createSession(customer.getId(), ClientType.Customer);
             }
             return null;
         } catch (Exception e) {
@@ -54,7 +54,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void logout(String token) {
-        tokenManager.deleteTokenRecord(token);
+        sessionManager.deleteSession(token);
     }
 
     @Override

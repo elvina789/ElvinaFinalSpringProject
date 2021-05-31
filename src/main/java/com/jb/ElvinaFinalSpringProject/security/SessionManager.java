@@ -3,12 +3,12 @@ package com.jb.ElvinaFinalSpringProject.security;
 import com.jb.ElvinaFinalSpringProject.Beans.Enums.ClientType;
 import com.jb.ElvinaFinalSpringProject.Beans.Session;
 
-public interface TokenManager {
-    Session createTokenRecord(int beanId, ClientType clientType);
+public interface SessionManager {
+    Session createSession(int beanId, ClientType clientType);
 
-    void deleteTokenRecord(String token);
+    void deleteSession(String token);
 
-    Session getTokenRecord(String token);
+    Session getSession(String token);
 
     boolean validateToken(String token, ClientType clientType);
 }

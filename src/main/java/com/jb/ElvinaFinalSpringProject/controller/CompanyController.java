@@ -7,7 +7,7 @@ import com.jb.ElvinaFinalSpringProject.Beans.Enums.ClientType;
 import com.jb.ElvinaFinalSpringProject.Beans.LoginCredentials;
 import com.jb.ElvinaFinalSpringProject.Beans.Session;
 import com.jb.ElvinaFinalSpringProject.Login.LoginManager;
-import com.jb.ElvinaFinalSpringProject.security.TokenManager;
+import com.jb.ElvinaFinalSpringProject.security.SessionManager;
 import com.jb.ElvinaFinalSpringProject.services.interfaces.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,13 +21,13 @@ import java.util.List;
 public class CompanyController {
     private final CompanyService companyService;
     private final LoginManager loginManager;
-    private final TokenManager tokenManager;
+    private final SessionManager sessionManager;
 
     @Autowired
-    public CompanyController(CompanyService companyService, LoginManager loginManager, TokenManager tokenManager) {
+    public CompanyController(CompanyService companyService, LoginManager loginManager, SessionManager sessionManager) {
         this.companyService = companyService;
         this.loginManager = loginManager;
-        this.tokenManager = tokenManager;
+        this.sessionManager = sessionManager;
     }
 
     @PostMapping("login")
@@ -47,7 +47,7 @@ public class CompanyController {
     @PostMapping("logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Company)) {
+            if (sessionManager.validateToken(token, ClientType.Company)) {
                 loginManager.logout(token, ClientType.Company);
                 return new ResponseEntity<>("Successfully logged out", HttpStatus.OK);
             } else {
@@ -61,8 +61,8 @@ public class CompanyController {
     @PostMapping("coupon")
     public ResponseEntity<?> addCoupon(@RequestHeader("Authorization") String token, @RequestBody Coupon coupon) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Company)) {
-                Session session = tokenManager.getTokenRecord(token);
+            if (sessionManager.validateToken(token, ClientType.Company)) {
+                Session session = sessionManager.getSession(token);
                 companyService.addCoupon(session.getBeanId(), coupon);
                 return new ResponseEntity<>(coupon, HttpStatus.CREATED);
             } else {
@@ -76,8 +76,8 @@ public class CompanyController {
     @PutMapping("coupon")
     public ResponseEntity<?> updateCoupon(@RequestHeader("Authorization") String token, @RequestBody Coupon coupon) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Company)) {
-                Session session = tokenManager.getTokenRecord(token);
+            if (sessionManager.validateToken(token, ClientType.Company)) {
+                Session session = sessionManager.getSession(token);
                 companyService.updateCoupon(session.getBeanId(), coupon);
                 return new ResponseEntity<>(coupon, HttpStatus.OK);
             } else {
@@ -91,8 +91,8 @@ public class CompanyController {
     @DeleteMapping("coupon/{id}")
     public ResponseEntity<?> deleteCoupon(@RequestHeader("Authorization") String token, @PathVariable Integer id) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Company)) {
-                Session session = tokenManager.getTokenRecord(token);
+            if (sessionManager.validateToken(token, ClientType.Company)) {
+                Session session = sessionManager.getSession(token);
                 companyService.deleteCoupon(session.getBeanId(), id);
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
@@ -106,8 +106,8 @@ public class CompanyController {
     @GetMapping("coupons")
     public ResponseEntity<?> getCompanyCoupons(@RequestHeader("Authorization") String token) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Company)) {
-                Session session = tokenManager.getTokenRecord(token);
+            if (sessionManager.validateToken(token, ClientType.Company)) {
+                Session session = sessionManager.getSession(token);
                 List<Coupon> coupons = companyService.getCompanyCoupons(session.getBeanId());
                 return new ResponseEntity<>(coupons, HttpStatus.OK);
             } else {
@@ -121,8 +121,8 @@ public class CompanyController {
     @GetMapping(name = "coupons", params = "categoryId")
     public ResponseEntity<?> getCompanyCouponsByCategory(@RequestHeader("Authorization") String token, @RequestParam int categoryId) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Company)) {
-                Session session = tokenManager.getTokenRecord(token);
+            if (sessionManager.validateToken(token, ClientType.Company)) {
+                Session session = sessionManager.getSession(token);
                 List<Coupon> coupons = companyService.getCompanyCoupons(session.getBeanId(), Category.idToCategory(categoryId));
                 return new ResponseEntity<>(coupons, HttpStatus.OK);
             } else {
@@ -136,8 +136,8 @@ public class CompanyController {
     @GetMapping(value = "coupons", params = "maxPrice")
     public ResponseEntity<?> getCompanyCouponsByMaxPrice(@RequestHeader("Authorization") String token, @RequestParam double maxPrice) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Company)) {
-                Session session = tokenManager.getTokenRecord(token);
+            if (sessionManager.validateToken(token, ClientType.Company)) {
+                Session session = sessionManager.getSession(token);
                 List<Coupon> coupons = companyService.getCompanyCoupons(session.getBeanId(), maxPrice);
                 return new ResponseEntity<>(coupons, HttpStatus.OK);
             } else {
@@ -151,8 +151,8 @@ public class CompanyController {
     @GetMapping("details")
     public ResponseEntity<?> getCompanyDetails(@RequestHeader("Authorization") String token) {
         try {
-            if (tokenManager.validateToken(token, ClientType.Company)) {
-                Session session = tokenManager.getTokenRecord(token);
+            if (sessionManager.validateToken(token, ClientType.Company)) {
+                Session session = sessionManager.getSession(token);
                 Company company = companyService.getCompanyDetails(session.getBeanId());
                 return new ResponseEntity<>(company, HttpStatus.OK);
             } else {

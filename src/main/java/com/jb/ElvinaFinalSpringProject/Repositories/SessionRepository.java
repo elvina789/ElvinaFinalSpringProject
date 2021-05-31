@@ -10,7 +10,7 @@ import javax.transaction.Transactional;
  * Repository to manage login tokens of our application in db
  */
 @Repository
-public interface TokenRepository extends JpaRepository<Session, String> {
+public interface SessionRepository extends JpaRepository<Session, String> {
     /***
      * Method used to delete tokens which passed expiration date
      * @param expirationDate expiration date used in the delete query
