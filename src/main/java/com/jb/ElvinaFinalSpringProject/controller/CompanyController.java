@@ -7,6 +7,7 @@ import com.jb.ElvinaFinalSpringProject.Beans.Enums.ClientType;
 import com.jb.ElvinaFinalSpringProject.Beans.LoginCredentials;
 import com.jb.ElvinaFinalSpringProject.Beans.TokenRecord;
 import com.jb.ElvinaFinalSpringProject.Login.LoginManager;
+import com.jb.ElvinaFinalSpringProject.errors.Exeptions.LoginManagerException;
 import com.jb.ElvinaFinalSpringProject.security.TokenManager;
 import com.jb.ElvinaFinalSpringProject.services.interfaces.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class CompanyController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<?> login(@RequestBody LoginCredentials credentials) {
+    public ResponseEntity<?> login(@RequestBody LoginCredentials credentials) throws LoginManagerException {
         try {
             TokenRecord tokenRecord = loginManager.login(credentials.getEmail(), credentials.getPassword(), ClientType.Company);
             return new ResponseEntity<>(tokenRecord, HttpStatus.OK);

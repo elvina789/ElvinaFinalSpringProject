@@ -9,6 +9,7 @@ import com.jb.ElvinaFinalSpringProject.Repositories.CompanyRepository;
 import com.jb.ElvinaFinalSpringProject.Repositories.CouponRepository;
 import com.jb.ElvinaFinalSpringProject.controller.AdminController;
 import com.jb.ElvinaFinalSpringProject.controller.CompanyController;
+import com.jb.ElvinaFinalSpringProject.errors.Exeptions.LoginManagerException;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.junit.jupiter.api.*;
@@ -64,7 +65,7 @@ public class CompanyServiceTests {
 
     @Test
     @Order(1)
-    void loginTest() {
+    void loginTest() throws LoginManagerException {
         LoginCredentials credentials = LoginCredentials.builder()
                 .email(company.getEmail())
                 .password(company.getPassword())

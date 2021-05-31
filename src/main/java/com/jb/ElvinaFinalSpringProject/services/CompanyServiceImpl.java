@@ -5,8 +5,8 @@ import com.jb.ElvinaFinalSpringProject.Beans.Coupon;
 import com.jb.ElvinaFinalSpringProject.Beans.Enums.Category;
 import com.jb.ElvinaFinalSpringProject.Beans.Enums.ClientType;
 import com.jb.ElvinaFinalSpringProject.Beans.TokenRecord;
-import com.jb.ElvinaFinalSpringProject.Exeptions.CompanyServiceException;
-import com.jb.ElvinaFinalSpringProject.Exeptions.InvalidCouponException;
+import com.jb.ElvinaFinalSpringProject.errors.Exeptions.CompanyServiceException;
+import com.jb.ElvinaFinalSpringProject.errors.Exeptions.InvalidCouponException;
 import com.jb.ElvinaFinalSpringProject.Repositories.CompanyRepository;
 import com.jb.ElvinaFinalSpringProject.Repositories.CouponRepository;
 import com.jb.ElvinaFinalSpringProject.security.TokenManager;
@@ -42,7 +42,7 @@ public class CompanyServiceImpl implements CompanyService {
             if (company != null) {
                 return tokenManager.createTokenRecord(company.getId(), ClientType.Company);
             }
-            return null;
+            throw new CompanyServiceException("Couldn't login");
         } catch (RuntimeException e) {
             throw new CompanyServiceException("Something gone wrong when we tried to login company with email " + email + ", error- " + e.getMessage());
         }

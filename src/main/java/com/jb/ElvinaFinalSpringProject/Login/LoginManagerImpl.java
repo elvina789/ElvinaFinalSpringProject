@@ -2,7 +2,7 @@ package com.jb.ElvinaFinalSpringProject.Login;
 
 import com.jb.ElvinaFinalSpringProject.Beans.Enums.ClientType;
 import com.jb.ElvinaFinalSpringProject.Beans.TokenRecord;
-import com.jb.ElvinaFinalSpringProject.Exeptions.LoginManagerException;
+import com.jb.ElvinaFinalSpringProject.errors.Exeptions.LoginManagerException;
 import com.jb.ElvinaFinalSpringProject.services.interfaces.AdminService;
 import com.jb.ElvinaFinalSpringProject.services.interfaces.CompanyService;
 import com.jb.ElvinaFinalSpringProject.services.interfaces.CustomerService;

@@ -4,8 +4,8 @@ import com.jb.ElvinaFinalSpringProject.Beans.Coupon;
 import com.jb.ElvinaFinalSpringProject.Beans.Customer;
 import com.jb.ElvinaFinalSpringProject.Beans.Enums.Category;
 import com.jb.ElvinaFinalSpringProject.Beans.TokenRecord;
-import com.jb.ElvinaFinalSpringProject.Exeptions.CustomerServiceException;
-import com.jb.ElvinaFinalSpringProject.Exeptions.InvalidCouponException;
+import com.jb.ElvinaFinalSpringProject.errors.Exeptions.CustomerServiceException;
+import com.jb.ElvinaFinalSpringProject.errors.Exeptions.InvalidCouponException;
 
 import java.util.List;
 

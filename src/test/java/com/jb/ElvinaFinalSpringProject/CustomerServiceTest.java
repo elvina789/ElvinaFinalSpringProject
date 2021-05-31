@@ -2,7 +2,7 @@ package com.jb.ElvinaFinalSpringProject;
 
 import com.jb.ElvinaFinalSpringProject.Beans.*;
 import com.jb.ElvinaFinalSpringProject.Beans.Enums.Category;
-import com.jb.ElvinaFinalSpringProject.Exeptions.LoginManagerException;
+import com.jb.ElvinaFinalSpringProject.errors.Exeptions.LoginManagerException;
 import com.jb.ElvinaFinalSpringProject.Repositories.CompanyRepository;
 import com.jb.ElvinaFinalSpringProject.Repositories.CouponRepository;
 import com.jb.ElvinaFinalSpringProject.Repositories.CustomerRepository;
@@ -49,7 +49,7 @@ public class CustomerServiceTest {
     }
 
     @BeforeAll
-    void initTests() {
+    void initTests() throws LoginManagerException {
         ResponseEntity<?> adminLoginResponse = adminController.login(LoginCredentials.builder().email("admin@admin.com").password("admin").build());
         TokenRecord adminTokenRecord = (TokenRecord) adminLoginResponse.getBody();
         company = Company.builder().name("Company1").email("company1@company1.com").password("company1").build();

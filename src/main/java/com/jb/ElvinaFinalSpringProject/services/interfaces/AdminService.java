@@ -3,9 +3,9 @@ package com.jb.ElvinaFinalSpringProject.services.interfaces;
 import com.jb.ElvinaFinalSpringProject.Beans.Company;
 import com.jb.ElvinaFinalSpringProject.Beans.Customer;
 import com.jb.ElvinaFinalSpringProject.Beans.TokenRecord;
-import com.jb.ElvinaFinalSpringProject.Exeptions.AdminServiceException;
-import com.jb.ElvinaFinalSpringProject.Exeptions.InvalidCompanyException;
-import com.jb.ElvinaFinalSpringProject.Exeptions.InvalidCustomerException;
+import com.jb.ElvinaFinalSpringProject.errors.Exeptions.AdminServiceException;
+import com.jb.ElvinaFinalSpringProject.errors.Exeptions.InvalidCompanyException;
+import com.jb.ElvinaFinalSpringProject.errors.Exeptions.InvalidCustomerException;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.jb.ElvinaFinalSpringProject.Exeptions;
+package com.jb.ElvinaFinalSpringProject.errors.Exeptions;
 
 public class InvalidCompanyException extends Exception {
     public InvalidCompanyException() {
