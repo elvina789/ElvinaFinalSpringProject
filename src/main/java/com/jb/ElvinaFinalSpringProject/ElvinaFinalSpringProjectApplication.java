@@ -13,6 +13,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ElvinaFinalSpringProjectApplication {
     public static void main(String[] args) {
         SpringApplication.run(ElvinaFinalSpringProjectApplication.class, args);
-        log.info(art.myServer);
+        log.info("2"+art.myServer);
     }
 }
