@@ -76,6 +76,20 @@ public class CompanyServiceTests {
     }
 
     @Test
+    @Order(1)
+    void loginTestIncorrectCredentials() {
+        LoginCredentials credentials = LoginCredentials.builder()
+                .email(company.getEmail() + "123")
+                .password(company.getPassword() + "123")
+                .build();
+        ResponseEntity<?> response = companyController.login(credentials);
+        log.info("Returned response status {}", response.getStatusCode());
+        log.info("Returned response body {}", response.getBody());
+        Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
+        Assert.isTrue("Incorrect email or password".equals(response.getBody()));
+    }
+
+    @Test
     @Order(2)
     void addCouponsTest() {
         for (Coupon coupon : couponTemplates) {

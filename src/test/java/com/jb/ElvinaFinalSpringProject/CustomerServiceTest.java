@@ -2,7 +2,6 @@ package com.jb.ElvinaFinalSpringProject;
 
 import com.jb.ElvinaFinalSpringProject.Beans.*;
 import com.jb.ElvinaFinalSpringProject.Beans.Enums.Category;
-import com.jb.ElvinaFinalSpringProject.Exeptions.LoginManagerException;
 import com.jb.ElvinaFinalSpringProject.Repositories.CompanyRepository;
 import com.jb.ElvinaFinalSpringProject.Repositories.CouponRepository;
 import com.jb.ElvinaFinalSpringProject.Repositories.CustomerRepository;
@@ -75,7 +74,7 @@ public class CustomerServiceTest {
 
     @Test
     @Order(1)
-    void loginTest() throws LoginManagerException {
+    void loginTest() {
         LoginCredentials credentials = LoginCredentials.builder()
                 .email(customer.getEmail())
                 .password(customer.getPassword())
@@ -84,6 +83,20 @@ public class CustomerServiceTest {
         Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
         tokenRecord = (TokenRecord) response.getBody();
         Assert.notNull(tokenRecord, "Admin token record returned null");
+    }
+
+    @Test
+    @Order(1)
+    void loginTestIncorrectCredentials() {
+        LoginCredentials credentials = LoginCredentials.builder()
+                .email(customer.getEmail() + "123")
+                .password(customer.getPassword() + "123")
+                .build();
+        ResponseEntity<?> response = customerController.login(credentials);
+        log.info("Returned response status {}", response.getStatusCode());
+        log.info("Returned response body {}", response.getBody());
+        Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
+        Assert.isTrue("Incorrect email or password".equals(response.getBody()));
     }
 
     @Test

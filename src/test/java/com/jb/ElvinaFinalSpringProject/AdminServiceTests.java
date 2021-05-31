@@ -61,11 +61,29 @@ class AdminServiceTests {
     @Order(1)
     void loginTest() {
         LoginCredentials credentials = LoginCredentials.builder().email("admin@admin.com").password("admin").build();
+        HttpStatus expected = HttpStatus.OK;
+        log.info("Expected:");
+        log.info("Expected response status {}", expected);
+        log.info("Expected response body not empty");
+        log.info("Actual:");
         ResponseEntity<?> response = adminController.login(credentials);
-        Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
+        log.info("Actual response status {}", response.getStatusCode());
+        log.info("Actual response body {}", response.getBody());
+        Assert.isTrue(response.getStatusCode().equals(expected), "Status returned not as expected");
         tokenRecord = (TokenRecord) response.getBody();
         Assert.notNull(tokenRecord, "Admin token record returned null");
         Assert.notNull(tokenRecord.getToken(), "Token record has no token");
+    }
+
+    @Test
+    @Order(1)
+    void loginTestIncorrectCredentials() {
+        LoginCredentials credentials = LoginCredentials.builder().email("admin2@admin.com").password("admin2").build();
+        ResponseEntity<?> response = adminController.login(credentials);
+        log.info("Returned response status {}", response.getStatusCode());
+        log.info("Returned response body {}", response.getBody());
+        Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
+        Assert.isTrue("Incorrect email or password".equals(response.getBody()));
     }
 
     @Test

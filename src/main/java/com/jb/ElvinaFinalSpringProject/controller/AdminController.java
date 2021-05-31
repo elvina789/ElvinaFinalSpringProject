@@ -36,7 +36,11 @@ public class AdminController {
     public ResponseEntity<?> login(@RequestBody LoginCredentials credentials) {
         try {
             TokenRecord tokenRecord = loginManager.login(credentials.getEmail(), credentials.getPassword(), ClientType.Administrator);
-            return new ResponseEntity<>(tokenRecord, HttpStatus.OK);
+            if (tokenRecord != null) {
+                return new ResponseEntity<>(tokenRecord, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Incorrect email or password", HttpStatus.OK);
+            }
         } catch (Throwable t) {
             return new ResponseEntity<>(t.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
