@@ -1,6 +1,6 @@
 package com.jb.ElvinaFinalSpringProject.Exeptions;
 
-public class AdminServiceException extends Exception {
+public class AdminServiceException extends RuntimeException {
     public AdminServiceException(String message) {
         super(message);
     }

@@ -65,12 +65,16 @@ public class CompanyTests {
     @Test
     @Order(1)
     void loginTest() {
+        HttpStatus expectedStatus = HttpStatus.OK;
+        log.info("Expected:");
+        log.info("Expected response status {}", expectedStatus);
         LoginCredentials credentials = LoginCredentials.builder()
                 .email(company.getEmail())
                 .password(company.getPassword())
                 .build();
         ResponseEntity<?> response = companyController.login(credentials);
-        Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
+        log.info("Actual response status {}", response.getStatusCode());
+        Assert.isTrue(response.getStatusCode().equals(expectedStatus), "Status returned not as expected");
         session = (Session) response.getBody();
         Assert.notNull(session, "Admin token record returned null");
     }
@@ -78,6 +82,9 @@ public class CompanyTests {
     @Test
     @Order(1)
     void loginTestIncorrectCredentials() {
+        HttpStatus expectedStatus = HttpStatus.OK;
+        log.info("Expected:");
+        log.info("Expected response status {}", expectedStatus);
         LoginCredentials credentials = LoginCredentials.builder()
                 .email(company.getEmail() + "123")
                 .password(company.getPassword() + "123")
@@ -85,15 +92,22 @@ public class CompanyTests {
         ResponseEntity<?> response = companyController.login(credentials);
         log.info("Returned response status {}", response.getStatusCode());
         log.info("Returned response body {}", response.getBody());
-        Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
-        Assert.isTrue("Incorrect email or password".equals(response.getBody()));
+        Assert.isTrue(response.getStatusCode().equals(expectedStatus), "Status returned not as expected");
+        Assert.isTrue("Incorrect email or password".equals(response.getBody()), "Incorrect message returned");
     }
 
     @Test
     @Order(2)
     void addCouponsTest() {
         for (Coupon coupon : couponTemplates) {
+            HttpStatus expectedStatus = HttpStatus.CREATED;
+            log.info("Expected:");
+            log.info("Expected response status {}", expectedStatus);
+            log.info("Expected coupon {}", coupon);
             ResponseEntity<?> response = companyController.addCoupon(session.getToken(), coupon);
+            log.info("Actual:");
+            log.info("Actual response status {}", response.getStatusCode());
+            log.info("Actual coupon {}", response.getBody());
             Assert.isTrue(response.getStatusCode().equals(HttpStatus.CREATED), "Status returned not as expected");
             log.info("Created coupon {}", coupon);
         }
@@ -102,9 +116,14 @@ public class CompanyTests {
     @Test
     @Order(3)
     void getCouponsByCategoryTest() {
-        ResponseEntity<?> response = companyController.getCompanyCouponsByCategory(session.getToken(), Category.Electricity.getId());
-        Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
-        List<Coupon> coupons = (List<Coupon>) response.getBody();
+        HttpStatus expectedStatus = HttpStatus.OK;
+        log.info("Expected:");
+        log.info("Expected response status {}", expectedStatus);
+        ResponseEntity<List<Coupon>> response = companyController.getCompanyCouponsByCategory(session.getToken(), Category.Electricity.getId());
+        log.info("Actual response status {}", response.getStatusCode());
+        Assert.isTrue(response.getStatusCode().equals(expectedStatus), "Status returned not as expected");
+        List<Coupon> coupons = response.getBody();
+        log.info("Actual response coupons {}", coupons);
         Assert.isTrue(coupons.size() == 1, "Incorrect number of coupons");
         Assert.isTrue(coupons.get(0).getCategoryId() == Category.Electricity.getId(), "Incorrect category id returned");
     }
@@ -112,22 +131,39 @@ public class CompanyTests {
     @Test
     @Order(4)
     void getCouponsByPriceTest() {
+        HttpStatus expectedStatus = HttpStatus.OK;
+        int expectedSize = 1;
+        log.info("Expected:");
+        log.info("Expected response status {}", expectedStatus);
+        log.info("Expected expected size {}", expectedSize);
         double maxPrice = 1000.0;
-        ResponseEntity<?> response = companyController.getCompanyCouponsByMaxPrice(session.getToken(), maxPrice);
-        Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
-        List<Coupon> coupons = (List<Coupon>) response.getBody();
+        ResponseEntity<List<Coupon>> response = companyController.getCompanyCouponsByMaxPrice(session.getToken(), maxPrice);
+        log.info("Actual response status {}", response.getStatusCode());
+        Assert.isTrue(response.getStatusCode().equals(expectedStatus), "Status returned not as expected");
+        List<Coupon> coupons = response.getBody();
+        log.info("Actual:");
+        log.info("Actual response status {}", response.getStatusCode());
         Assert.notNull(coupons, "Got null as result");
-        Assert.isTrue(coupons.size() == 1, "Incorrect number of coupons");
+        log.info("Actual size {}", coupons.size());
+        Assert.isTrue(coupons.size() == expectedSize, "Incorrect number of coupons");
         Assert.isTrue(coupons.get(0).getPrice() <= 1000.0, "Incorrect price returned");
     }
 
     @Test
     @Order(5)
     void getAllCoupons() {
+        HttpStatus expectedStatus = HttpStatus.OK;
+        int expectedSize = 3;
+        log.info("Expected:");
+        log.info("Expected response status {}", expectedStatus);
+        log.info("Expected expected size {}", expectedSize);
         ResponseEntity<?> response = companyController.getCompanyCoupons(session.getToken());
-        Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
+        Assert.isTrue(response.getStatusCode().equals(expectedStatus), "Status returned not as expected");
         List<Coupon> coupons = (List<Coupon>) response.getBody();
+        log.info("Actual:");
+        log.info("Actual response status {}", response.getStatusCode());
         Assert.notNull(coupons, "Got null as result");
+        log.info("Actual size {}", coupons.size());
         Assert.isTrue(coupons.size() == 3, "Incorrect number of coupons");
         Assert.isTrue(company.getId() == coupons.get(0).getCompanyId(), "Incorrect company id returned in coupon");
     }
@@ -135,14 +171,19 @@ public class CompanyTests {
     @Test
     @Order(6)
     void deleteCouponTest() {
+        HttpStatus expectedStatus = HttpStatus.OK;
+        log.info("Expected:");
+        log.info("Expected response status {}", expectedStatus);
         int id = couponTemplates.get(0).getId();
         ResponseEntity<?> deleteResponse = companyController.deleteCoupon(session.getToken(), id);
-        Assert.isTrue(deleteResponse.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
+        log.info("Actual response status {}", deleteResponse.getStatusCode());
+        Assert.isTrue(deleteResponse.getStatusCode().equals(expectedStatus), "Status returned not as expected");
         ResponseEntity<?> getCouponsResponse = companyController.getCompanyCoupons(session.getToken());
-        Assert.isTrue(getCouponsResponse.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
+        Assert.isTrue(getCouponsResponse.getStatusCode().equals(expectedStatus), "Status returned not as expected");
         List<Coupon> coupons = (List<Coupon>) getCouponsResponse.getBody();
         boolean notFound = coupons.stream().noneMatch(e -> e.getId() == id);
         Assert.isTrue(notFound, "Coupon found after deleting");
+        log.info("Coupon successfully deleted");
     }
 
     @Test

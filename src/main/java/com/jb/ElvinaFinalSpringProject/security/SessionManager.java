@@ -10,5 +10,5 @@ public interface SessionManager {
 
     Session getSession(String token);
 
-    boolean validateToken(String token, ClientType clientType);
+    void validateToken(String token, ClientType clientType);
 }

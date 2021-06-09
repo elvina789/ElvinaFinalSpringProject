@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -40,6 +41,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Session login(String email, String password) {
+//        email = new String(Base64.getDecoder().decode(email));
+//        password = new String(Base64.getDecoder().decode(password));
         if (Constants.ADMIN_EMAIL.equals(email) && Constants.ADMIN_PASSWORD.equals(password)) {
             return sessionManager.createSession(Constants.ADMIN_USER_ID, ClientType.Administrator);
         } else {

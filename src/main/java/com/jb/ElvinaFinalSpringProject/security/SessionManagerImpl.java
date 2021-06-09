@@ -2,6 +2,7 @@ package com.jb.ElvinaFinalSpringProject.security;
 
 import com.jb.ElvinaFinalSpringProject.Beans.Enums.ClientType;
 import com.jb.ElvinaFinalSpringProject.Beans.Session;
+import com.jb.ElvinaFinalSpringProject.Exeptions.InvalidTokenException;
 import com.jb.ElvinaFinalSpringProject.Repositories.SessionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
@@ -47,13 +48,16 @@ public class SessionManagerImpl implements SessionManager {
     }
 
     @Override
-    public boolean validateToken(String token, ClientType clientType) {
+    public void validateToken(String token, ClientType clientType) {
+        boolean valid = false;
         if (sessionRepository.existsById(token)) {
             Session session = sessionRepository.getOne(token);
-            return clientType.getId() == session.getClientType() &&
+            valid = clientType.getId() == session.getClientType() &&
                     DateTime.now().getMillis() <= session.getExpirationDate();
         }
-        return false;
+        if (!valid) {
+            throw new InvalidTokenException();
+        }
     }
 
     private void clearExpiredRecords() {

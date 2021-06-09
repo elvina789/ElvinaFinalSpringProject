@@ -96,32 +96,56 @@ class AdminTests {
     @Order(2)
     void addCompanyTest() {
         for (Company company : companyTemplates) {
-            adminController.addCompany(session.getToken(), company);
-            log.info("Created company {}", company);
+            HttpStatus expectedStatus = HttpStatus.CREATED;
+            log.info("Expected:");
+            log.info("Expected response status {}", expectedStatus);
+            log.info("Expected response body {}", company);
+            log.info("Actual:");
+            ResponseEntity<Company> response = adminController.addCompany(session.getToken(), company);
+            log.info("Actual response status {}", response.getStatusCode());
+            log.info("Actual response body {}", response.getBody());
+            Assert.isTrue(response.getStatusCode().equals(expectedStatus), "Company " + company.getId() + " not created");
         }
     }
 
     @Test
     @Order(3)
     void getCompanyOneTest() {
-        int id = companyTemplates.get(0).getId();
-        log.info("Testing get company with company id - {}", id);
-        ResponseEntity<?> response = adminController.getOneCompany(session.getToken(), id);
-        Assert.isTrue(response.getStatusCode().equals(HttpStatus.FOUND), "Status returned not as expected");
-        Company company = (Company) response.getBody();
-        log.info("The following company returned {}", company);
-        Assert.notNull(company, "Company returned as null");
-        Assert.isTrue(id == company.getId(), "The id returned is not correct");
+        HttpStatus expectedStatus = HttpStatus.FOUND;
+        Company expectedCompany = companyTemplates.get(0);
+        log.info("Expected:");
+        log.info("Expected response status {}", expectedStatus);
+        log.info("Expected response body {}", expectedCompany);
+        log.info("Actual:");
+        ResponseEntity<Company> response = adminController.getOneCompany(session.getToken(), expectedCompany.getId());
+        log.info("Actual response status {}", response.getStatusCode());
+        log.info("Actual response body {}", response.getBody());
+        Assert.isTrue(response.getStatusCode().equals(expectedStatus), "Status returned not as expected");
+        Company responseCompany = response.getBody();
+        Assert.notNull(responseCompany, "Company returned as null");
+        Assert.isTrue(expectedCompany.getId() == responseCompany.getId(), "The id returned is not correct");
     }
 
     @Test
     @Order(4)
     void deleteCompanyTest() {
-        int id = companyTemplates.get(0).getId();
-        log.info("Testing delete company with company id - {}", id);
-        ResponseEntity<?> deleteResponse = adminController.deleteCompany(session.getToken(), id);
-        Assert.isTrue(deleteResponse.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
-        ResponseEntity<?> getResponse = adminController.getOneCompany(session.getToken(), id);
+        HttpStatus expectedStatusForDelete = HttpStatus.OK;
+        Company expectedCompany = companyTemplates.get(0);
+        log.info("Expected for delete:");
+        log.info("Expected response status {}", expectedStatusForDelete);
+        log.info("Expected response body {}", expectedCompany);
+        log.info("Actual:");
+        log.info("Testing delete company with company id - {}", expectedCompany.getId());
+        ResponseEntity<?> deleteResponse = adminController.deleteCompany(session.getToken(), expectedCompany.getId());
+        log.info("Actual response status {}", deleteResponse.getStatusCode());
+        log.info("Actual response body {}", deleteResponse.getBody());
+        Assert.isTrue(deleteResponse.getStatusCode().equals(expectedStatusForDelete), "Status returned not as expected");
+
+        HttpStatus expectedStatusForGet = HttpStatus.NOT_FOUND;
+        log.info("Expected for get:");
+        log.info("Expected response status {}", expectedStatusForDelete);
+        ResponseEntity<?> getResponse = adminController.getOneCompany(session.getToken(), expectedCompany.getId());
+        log.info("Actual response status {}", getResponse.getStatusCode());
         Assert.isTrue(getResponse.getStatusCode().equals(HttpStatus.NOT_FOUND), "Status returned not as expected");
     }
 
@@ -129,11 +153,18 @@ class AdminTests {
     @Order(5)
     void updateCompanyTest() {
         Company company = companyTemplates.get(1);
-        String newEmail = "updated@updated.com";
         log.info("Company before update {}", company);
+        String newEmail = "updated@updated.com";
         company.setEmail(newEmail);
+        HttpStatus expectedStatus = HttpStatus.OK;
+        log.info("Expected:");
+        log.info("Expected response status {}", expectedStatus);
+        log.info("Expected response body {}", company);
+        log.info("Actual:");
         ResponseEntity<?> updateResponse = adminController.updateCompany(session.getToken(), company);
-        Assert.isTrue(updateResponse.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
+        log.info("Actual response status {}", updateResponse.getStatusCode());
+        log.info("Actual response body {}", updateResponse.getBody());
+        Assert.isTrue(updateResponse.getStatusCode().equals(expectedStatus), "Status returned not as expected");
         ResponseEntity<?> getResponse = adminController.getOneCompany(session.getToken(), company.getId());
         Assert.isTrue(getResponse.getStatusCode().equals(HttpStatus.FOUND), "Status returned not as expected");
         Company companyAfterUpdate = (Company) getResponse.getBody();
@@ -146,19 +177,30 @@ class AdminTests {
     @Test
     @Order(6)
     void getAllCompaniesTest() {
+        HttpStatus expectedStatus = HttpStatus.OK;
+        int expectedSize = 3;
+        log.info("Expected:");
+        log.info("Expected response status {}", expectedStatus);
+        log.info("Expected size {}", expectedStatus);
         ResponseEntity<?> response = adminController.getAllCompanies(session.getToken());
-        Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
+        log.info("Actual response status {}", response.getStatusCode());
+        Assert.isTrue(response.getStatusCode().equals(expectedStatus), "Status returned not as expected");
         List<Company> companies = (List<Company>) response.getBody();
         Assert.notNull(companies, "Companies list returned as null");
-        Assert.isTrue(companies.size() == 3, "Not all companies returned");
+        log.info("Actual size {}", companies.size());
+        Assert.isTrue(companies.size() == expectedSize, "Not all companies returned");
     }
 
     @Test
     @Order(7)
     void addCustomerTest() {
         for (Customer customer : customerTemplates) {
-            ResponseEntity<?> response = adminController.addCustomer(session.getToken(), customer);
-            Assert.isTrue(response.getStatusCode().equals(HttpStatus.CREATED), "Status returned not as expected");
+            HttpStatus expectedStatus = HttpStatus.CREATED;
+            log.info("Expected:");
+            log.info("Expected response status {}", expectedStatus);
+            ResponseEntity<Customer> response = adminController.addCustomer(session.getToken(), customer);
+            log.info("Actual response status {}", response.getStatusCode());
+            Assert.isTrue(response.getStatusCode().equals(expectedStatus), "Status returned not as expected");
             log.info("Created customer {}", customer);
         }
     }
@@ -166,68 +208,107 @@ class AdminTests {
     @Test
     @Order(8)
     void getCustomerOneTest() {
-        int id = customerTemplates.get(0).getId();
-        log.info("Testing get customer with id - {}", id);
-        ResponseEntity<?> response = adminController.getOneCustomer(session.getToken(), id);
-        Assert.isTrue(response.getStatusCode().equals(HttpStatus.FOUND), "Status returned not as expected");
-        Customer customer = (Customer) response.getBody();
+        HttpStatus expectedStatus = HttpStatus.FOUND;
+        Customer expectedCustomer = customerTemplates.get(0);
+        log.info("Expected:");
+        log.info("Expected response status {}", expectedStatus);
+        log.info("Expected customer {}", expectedCustomer);
+        ResponseEntity<Customer> response = adminController.getOneCustomer(session.getToken(), expectedCustomer.getId());
+        log.info("Actual response status {}", response.getStatusCode());
+        log.info("Actual response customer {}", response.getBody());
+        Assert.isTrue(response.getStatusCode().equals(expectedStatus), "Status returned not as expected");
+        Customer customer = response.getBody();
         Assert.notNull(customer, "Customer returned as null");
-        Assert.isTrue(id == customer.getId(), "The id returned is not correct");
+        Assert.isTrue(expectedCustomer.getId() == customer.getId(), "The id returned is not correct");
     }
 
     @Test
     @Order(9)
     void deleteCustomerTest() {
+        HttpStatus expectedStatus = HttpStatus.OK;
+        log.info("Expected:");
+        log.info("Expected response status {}", expectedStatus);
         int id = customerTemplates.get(0).getId();
         log.info("Testing delete customer with id - {}", id);
         ResponseEntity<?> response = adminController.deleteCustomer(session.getToken(), id);
-        Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
+        log.info("Actual response status {}", response.getStatusCode());
+        Assert.isTrue(response.getStatusCode().equals(expectedStatus), "Status returned not as expected");
         ResponseEntity<?> responseAfterDelete = adminController.getOneCustomer(session.getToken(), id);
         Assert.isTrue(responseAfterDelete.getStatusCode().equals(HttpStatus.NOT_FOUND), "Status returned not as expected");
+        log.info("Customer {} not found after delete", id);
     }
 
     @Test
     @Order(10)
     void updateCustomerTest() {
+        HttpStatus expectedStatusForUpdate = HttpStatus.OK;
         Customer customer = customerTemplates.get(1);
+        log.info("Customer before update {}", customer);
         String newPassword = "newPassword";
         customer.setPassword(newPassword);
-        ResponseEntity<?> updateResponse = adminController.updateCustomer(session.getToken(), customer);
-        Assert.isTrue(updateResponse.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
+        log.info("Expected:");
+        log.info("Expected response status for update {}", expectedStatusForUpdate);
+        log.info("Expected customer after update {}", customer);
+        ResponseEntity<Customer> updateResponse = adminController.updateCustomer(session.getToken(), customer);
+        log.info("Actual:");
+        log.info("Actual response status for update {}", updateResponse.getStatusCode());
+        log.info("Actual customer after update {}", updateResponse.getBody());
+        Assert.isTrue(updateResponse.getStatusCode().equals(expectedStatusForUpdate), "Status returned not as expected");
         ResponseEntity<?> getResponse = adminController.getOneCustomer(session.getToken(), customer.getId());
         Assert.isTrue(getResponse.getStatusCode().equals(HttpStatus.FOUND), "Status returned not as expected");
         Customer customerAfterUpdate = (Customer) getResponse.getBody();
         Assert.isTrue(newPassword.equals(customerAfterUpdate.getPassword()), "The update of password failed");
+        log.info("Customer was updated");
     }
 
     @Test
     @Order(11)
     void getAllCustomersTest() {
-        ResponseEntity<?> response = adminController.getAllCustomers(session.getToken());
-        Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
-        List<Customer> customers = (List<Customer>) response.getBody();
+        HttpStatus expectedResponse = HttpStatus.OK;
+        int expectedSize = 2;
+        log.info("Expected:");
+        log.info("Expected response status {}", expectedResponse);
+        log.info("Expected size {}", expectedSize);
+        ResponseEntity<List<Customer>> response = adminController.getAllCustomers(session.getToken());
+        log.info("Actual:");
+        log.info("Actual response status  {}", response.getStatusCode());
+        Assert.isTrue(response.getStatusCode().equals(expectedResponse), "Status returned not as expected");
+        List<Customer> customers = response.getBody();
         Assert.notNull(customers, "Customers list returned as null");
-        Assert.isTrue(customers.size() == 2, "Not all customers returned");
+        log.info("Actual size {}", customers.size());
+        Assert.isTrue(customers.size() == expectedSize, "Not all customers returned");
     }
 
     @Test
     @Order(12)
     void startCleaningJob() {
+        HttpStatus expectedStatus = HttpStatus.OK;
+        log.info("Expected:");
+        log.info("Expected response status {}", expectedStatus);
         ResponseEntity<?> response = adminController.startCleaningJob(session.getToken());
-        Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
+        log.info("Actual response status  {}", response.getStatusCode());
+        Assert.isTrue(response.getStatusCode().equals(expectedStatus), "Status returned not as expected");
     }
 
     @Test
     @Order(13)
     void stopCleaningJob() {
+        HttpStatus expectedStatus = HttpStatus.OK;
+        log.info("Expected:");
+        log.info("Expected response status {}", expectedStatus);
         ResponseEntity<?> response = adminController.stopCleaningJob(session.getToken());
-        Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
+        log.info("Actual response status  {}", response.getStatusCode());
+        Assert.isTrue(response.getStatusCode().equals(expectedStatus), "Status returned not as expected");
     }
 
     @Test
     @Order(14)
     void logOut() {
+        HttpStatus expectedStatus = HttpStatus.OK;
+        log.info("Expected:");
+        log.info("Expected response status {}", expectedStatus);
         ResponseEntity<?> response = adminController.logout(session.getToken());
-        Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
+        log.info("Actual response status  {}", response.getStatusCode());
+        Assert.isTrue(response.getStatusCode().equals(expectedStatus), "Status returned not as expected");
     }
 }

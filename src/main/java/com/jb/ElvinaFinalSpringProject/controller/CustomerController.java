@@ -32,105 +32,59 @@ public class CustomerController {
 
     @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody LoginCredentials credentials) {
-        try {
-            Session session = loginManager.login(credentials.getEmail(), credentials.getPassword(), ClientType.Customer);
-            if (session != null) {
-                return new ResponseEntity<>(session, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Incorrect email or password", HttpStatus.OK);
-            }
-        } catch (Throwable t) {
-            return new ResponseEntity<>(t.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        Session session = loginManager.login(credentials.getEmail(), credentials.getPassword(), ClientType.Customer);
+        if (session != null) {
+            return new ResponseEntity<>(session, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Incorrect email or password", HttpStatus.OK);
         }
     }
 
     @PostMapping("logout")
-    public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
-        try {
-            if (sessionManager.validateToken(token, ClientType.Customer)) {
-                loginManager.logout(token, ClientType.Customer);
-                return new ResponseEntity<>("Successfully logged out", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Invalid token", HttpStatus.UNAUTHORIZED);
-            }
-        } catch (Throwable t) {
-            return new ResponseEntity<>(t.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
+        sessionManager.validateToken(token, ClientType.Customer);
+        loginManager.logout(token, ClientType.Customer);
+        return new ResponseEntity<>("Successfully logged out", HttpStatus.OK);
     }
 
     @PostMapping("purchase")
-    public ResponseEntity<?> purchaseCoupon(@RequestHeader("Authorization") String token, @RequestBody Coupon coupon) {
-        try {
-            if (sessionManager.validateToken(token, ClientType.Customer)) {
-                Session session = sessionManager.getSession(token);
-                customerService.purchaseCoupon(session.getBeanId(), coupon);
-                return new ResponseEntity<>(coupon, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Invalid token", HttpStatus.UNAUTHORIZED);
-            }
-        } catch (Throwable t) {
-            return new ResponseEntity<>(t.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<Coupon> purchaseCoupon(@RequestHeader("Authorization") String token, @RequestBody Coupon coupon) {
+        sessionManager.validateToken(token, ClientType.Customer);
+        Session session = sessionManager.getSession(token);
+        customerService.purchaseCoupon(session.getBeanId(), coupon);
+        return new ResponseEntity<>(coupon, HttpStatus.OK);
     }
 
     @GetMapping("coupons")
-    public ResponseEntity<?> getCustomerCoupons(@RequestHeader("Authorization") String token) {
-        try {
-            if (sessionManager.validateToken(token, ClientType.Customer)) {
-                Session session = sessionManager.getSession(token);
-                List<Coupon> customerCoupons = customerService.getCustomerCoupons(session.getBeanId());
-                return new ResponseEntity<>(customerCoupons, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Invalid token", HttpStatus.UNAUTHORIZED);
-            }
-        } catch (Throwable t) {
-            return new ResponseEntity<>(t.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<List<Coupon>> getCustomerCoupons(@RequestHeader("Authorization") String token) {
+        sessionManager.validateToken(token, ClientType.Customer);
+        Session session = sessionManager.getSession(token);
+        List<Coupon> customerCoupons = customerService.getCustomerCoupons(session.getBeanId());
+        return new ResponseEntity<>(customerCoupons, HttpStatus.OK);
     }
 
     @GetMapping(name = "coupons", params = "maxPrice")
-    public ResponseEntity<?> getCustomerCouponsByMaxPrice(@RequestHeader("Authorization") String token, @RequestParam double maxPrice) {
-        try {
-            if (sessionManager.validateToken(token, ClientType.Customer)) {
-                Session session = sessionManager.getSession(token);
-                List<Coupon> customerCoupons = customerService.getCustomerCoupons(session.getBeanId(), maxPrice);
-                return new ResponseEntity<>(customerCoupons, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Invalid token", HttpStatus.UNAUTHORIZED);
-            }
-        } catch (Throwable t) {
-            return new ResponseEntity<>(t.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<List<Coupon>> getCustomerCouponsByMaxPrice(@RequestHeader("Authorization") String token, @RequestParam double maxPrice) {
+        sessionManager.validateToken(token, ClientType.Customer);
+        Session session = sessionManager.getSession(token);
+        List<Coupon> customerCoupons = customerService.getCustomerCoupons(session.getBeanId(), maxPrice);
+        return new ResponseEntity<>(customerCoupons, HttpStatus.OK);
     }
 
     @GetMapping(name = "coupons", params = "category")
-    public ResponseEntity<?> getCustomerCouponsByCategory(@RequestHeader("Authorization") String token, @RequestParam int categoryId) {
-        try {
-            if (sessionManager.validateToken(token, ClientType.Customer)) {
-                Session session = sessionManager.getSession(token);
-                List<Coupon> customerCoupons = customerService.getCustomerCoupons(session.getBeanId(), Category.idToCategory(categoryId));
-                return new ResponseEntity<>(customerCoupons, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Invalid token", HttpStatus.UNAUTHORIZED);
-            }
-        } catch (Throwable t) {
-            return new ResponseEntity<>(t.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<List<Coupon>> getCustomerCouponsByCategory(@RequestHeader("Authorization") String token, @RequestParam int categoryId) {
+        sessionManager.validateToken(token, ClientType.Customer);
+        Session session = sessionManager.getSession(token);
+        List<Coupon> customerCoupons = customerService.getCustomerCoupons(session.getBeanId(), Category.idToCategory(categoryId));
+        return new ResponseEntity<>(customerCoupons, HttpStatus.OK);
     }
 
     @GetMapping("details")
-    public ResponseEntity<?> getCustomerDetails(@RequestHeader("Authorization") String token) {
-        try {
-            if (sessionManager.validateToken(token, ClientType.Customer)) {
-                Session session = sessionManager.getSession(token);
-                Customer customer = customerService.getCustomerDetails(session.getBeanId());
-                return new ResponseEntity<>(customer, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Invalid token", HttpStatus.UNAUTHORIZED);
-            }
-        } catch (Throwable t) {
-            return new ResponseEntity<>(t.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<Customer> getCustomerDetails(@RequestHeader("Authorization") String token) {
+        sessionManager.validateToken(token, ClientType.Customer);
+        Session session = sessionManager.getSession(token);
+        Customer customer = customerService.getCustomerDetails(session.getBeanId());
+        return new ResponseEntity<>(customer, HttpStatus.OK);
     }
 }
 

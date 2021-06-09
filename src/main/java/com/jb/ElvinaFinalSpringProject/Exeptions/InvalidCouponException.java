@@ -1,6 +1,6 @@
 package com.jb.ElvinaFinalSpringProject.Exeptions;
 
-public class InvalidCouponException extends Exception {
+public class InvalidCouponException extends RuntimeException {
     public InvalidCouponException() {
         super("The coupon is invalid");
     }
