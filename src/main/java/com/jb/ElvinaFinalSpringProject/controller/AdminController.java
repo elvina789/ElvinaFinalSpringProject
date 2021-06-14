@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller to expose HTTP methods For Admin service
+ */
+
 @RestController
 @RequestMapping("admin")
 public class AdminController {
@@ -24,6 +28,14 @@ public class AdminController {
     private final SessionManager sessionManager;
     private final ScheduledTaskManager scheduledTaskManager;
 
+    /**
+     * Constructor of the AdminController type object
+     *
+     * @param adminService         adminService of AdminController object
+     * @param loginManager         loginManager of AdminController object
+     * @param sessionManager       sessionManager of AdminController object
+     * @param scheduledTaskManager scheduledTaskManager of AdminController object
+     */
     @Autowired
     public AdminController(AdminService adminService, LoginManager loginManager, SessionManager sessionManager, ScheduledTaskManager scheduledTaskManager) {
         this.adminService = adminService;
@@ -32,6 +44,12 @@ public class AdminController {
         this.scheduledTaskManager = scheduledTaskManager;
     }
 
+    /**
+     * exposes HTTP method to login
+     *
+     * @param credentials object stores credentials of the user
+     * @return session and HTTP Status if succeeded to login, and if not only HTTP status
+     */
     @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody LoginCredentials credentials) {
         Session session = loginManager.login(credentials.getEmail(), credentials.getPassword(), ClientType.Administrator);
@@ -42,6 +60,12 @@ public class AdminController {
         }
     }
 
+    /**
+     * exposes HTTP method to logout
+     *
+     * @param token token for a session
+     * @return HTTP status
+     */
     @PostMapping("logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
         sessionManager.validateToken(token, ClientType.Administrator);
@@ -49,6 +73,13 @@ public class AdminController {
         return new ResponseEntity<>("Successfully logged out", HttpStatus.OK);
     }
 
+    /**
+     * exposes HTTP method to add customer
+     *
+     * @param token    token for a session
+     * @param customer customer to add
+     * @return token amd HTTP status
+     */
     @PostMapping("customer")
     public ResponseEntity<Customer> addCustomer(@RequestHeader("Authorization") String token, @RequestBody Customer customer) {
         sessionManager.validateToken(token, ClientType.Administrator);
@@ -57,6 +88,13 @@ public class AdminController {
 
     }
 
+    /**
+     * exposes HTTP method to update customer
+     *
+     * @param token    token for a session
+     * @param customer customer yo update
+     * @return returns updated customer and HTTP status
+     */
     @PutMapping("customer")
     public ResponseEntity<Customer> updateCustomer(@RequestHeader("Authorization") String token, @RequestBody Customer customer) {
         sessionManager.validateToken(token, ClientType.Administrator);
@@ -64,6 +102,13 @@ public class AdminController {
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }
 
+    /**
+     * exposes HTTP method to get one customer
+     *
+     * @param token token for a session
+     * @param id    id of customer
+     * @return if customer is null returns HTTP status only, if customer is not null, returns customer and HTTP status
+     */
     @GetMapping("customer/{id}")
     public ResponseEntity<Customer> getOneCustomer(@RequestHeader("Authorization") String token, @PathVariable Integer id) {
         sessionManager.validateToken(token, ClientType.Administrator);
@@ -75,6 +120,13 @@ public class AdminController {
         }
     }
 
+    /**
+     * exposes HTTP method to delete customer
+     *
+     * @param token token for a session
+     * @param id    id of customer
+     * @return Http status
+     */
     @DeleteMapping("customer/{id}")
     public ResponseEntity<String> deleteCustomer(@RequestHeader("Authorization") String token, @PathVariable Integer id) {
         sessionManager.validateToken(token, ClientType.Administrator);
@@ -82,6 +134,12 @@ public class AdminController {
         return new ResponseEntity<>("Successfully deleted customer", HttpStatus.OK);
     }
 
+    /**
+     * expose HTTP method to get all customers
+     *
+     * @param token token for a session
+     * @return list of companies and HTTP status
+     */
     @DeleteMapping("customers")
     public ResponseEntity<List<Customer>> getAllCustomers(@RequestHeader("Authorization") String token) {
         sessionManager.validateToken(token, ClientType.Administrator);
@@ -89,6 +147,13 @@ public class AdminController {
         return new ResponseEntity<>(companies, HttpStatus.OK);
     }
 
+    /**
+     * exposes HTTP method to add company
+     *
+     * @param token   token for a session
+     * @param company company to add
+     * @return company and HTTP status
+     */
     @PostMapping("company")
     public ResponseEntity<Company> addCompany(@RequestHeader("Authorization") String token, @RequestBody Company company) {
         sessionManager.validateToken(token, ClientType.Administrator);
@@ -96,6 +161,13 @@ public class AdminController {
         return new ResponseEntity<>(company, HttpStatus.CREATED);
     }
 
+    /**
+     * exposes HTTP method to update company
+     *
+     * @param token   token for a session
+     * @param company company to update
+     * @return returns company and HTTP status
+     */
     @PutMapping("company")
     public ResponseEntity<Company> updateCompany(@RequestHeader("Authorization") String token, @RequestBody Company company) {
         sessionManager.validateToken(token, ClientType.Administrator);
@@ -103,6 +175,13 @@ public class AdminController {
         return new ResponseEntity<>(company, HttpStatus.OK);
     }
 
+    /**
+     * exposes HTTP method to get one company
+     *
+     * @param token token for a session
+     * @param id    id of the company
+     * @return if companmy is null returns HTTP status only, if company not null returns company and HTTP status
+     */
     @GetMapping("company/{id}")
     public ResponseEntity<Company> getOneCompany(@RequestHeader("Authorization") String token, @PathVariable Integer id) {
         sessionManager.validateToken(token, ClientType.Administrator);
@@ -114,6 +193,13 @@ public class AdminController {
         }
     }
 
+    /**
+     * exposes HTTP method to delete company
+     *
+     * @param token token for session
+     * @param id    id of the company
+     * @return HTTP status
+     */
     @DeleteMapping("company/{id}")
     public ResponseEntity<String> deleteCompany(@RequestHeader("Authorization") String token, @PathVariable Integer id) {
         sessionManager.validateToken(token, ClientType.Administrator);
@@ -121,6 +207,12 @@ public class AdminController {
         return new ResponseEntity<>("Company successfully deleted", HttpStatus.OK);
     }
 
+    /**
+     * expose HTTP method to get all companies
+     *
+     * @param token token for a session
+     * @return list of companies and HTTP status
+     */
     @DeleteMapping("companies")
     public ResponseEntity<List<Company>> getAllCompanies(@RequestHeader("Authorization") String token) {
         sessionManager.validateToken(token, ClientType.Administrator);
@@ -128,6 +220,12 @@ public class AdminController {
         return new ResponseEntity<>(companies, HttpStatus.OK);
     }
 
+    /**
+     * expose HTTP method to start cleaning job
+     *
+     * @param token token for a session
+     * @return HTTP status
+     */
     @PostMapping("cleaning/start")
     public ResponseEntity<String> startCleaningJob(@RequestHeader("Authorization") String token) {
         sessionManager.validateToken(token, ClientType.Administrator);
@@ -135,6 +233,12 @@ public class AdminController {
         return new ResponseEntity<>("Cleaning job started", HttpStatus.OK);
     }
 
+    /**
+     * expose HTTP method to stop cleaning job
+     *
+     * @param token token for a sesion
+     * @return token for a session
+     */
     @PostMapping("cleaning/stop")
     public ResponseEntity<String> stopCleaningJob(@RequestHeader("Authorization") String token) {
         sessionManager.validateToken(token, ClientType.Administrator);

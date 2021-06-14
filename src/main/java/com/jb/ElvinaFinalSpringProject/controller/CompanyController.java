@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller to expose HTTP methods For company service
+ */
 @RestController
 @RequestMapping("company")
 public class CompanyController {
@@ -23,6 +26,12 @@ public class CompanyController {
     private final LoginManager loginManager;
     private final SessionManager sessionManager;
 
+    /**
+     * Constructor of the Company controller type object
+     * @param companyService companyService of CompanyController object
+     * @param loginManager loginManager of CompanyController object
+     * @param sessionManager sessionManager of CompanyController object
+      */
     @Autowired
     public CompanyController(CompanyService companyService, LoginManager loginManager, SessionManager sessionManager) {
         this.companyService = companyService;
@@ -30,6 +39,11 @@ public class CompanyController {
         this.sessionManager = sessionManager;
     }
 
+    /**
+     * expose HTTP method to login
+     * @param credentials object stores credentials of the user
+     * @return session and HTTP Status if succeeded to login, and if not only HTTP status
+     */
     @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody LoginCredentials credentials) {
         Session session = loginManager.login(credentials.getEmail(), credentials.getPassword(), ClientType.Company);
@@ -40,6 +54,12 @@ public class CompanyController {
         }
     }
 
+    /**
+     * exposes Http method to logout
+     *
+     * @param token token for a session
+     * @return HTTP status
+     */
     @PostMapping("logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
         sessionManager.validateToken(token, ClientType.Company);
@@ -47,6 +67,12 @@ public class CompanyController {
         return new ResponseEntity<>("Successfully logged out", HttpStatus.OK);
     }
 
+    /**
+     * exposes HTTP method to add coupon
+     * @param token token for a session
+     * @param coupon coupon to add
+     * @return coupon and HTTP status
+     */
     @PostMapping("coupon")
     public ResponseEntity<Coupon> addCoupon(@RequestHeader("Authorization") String token, @RequestBody Coupon coupon) {
         Session session = sessionManager.getSession(token);
@@ -54,6 +80,12 @@ public class CompanyController {
         return new ResponseEntity<>(coupon, HttpStatus.CREATED);
     }
 
+    /**
+     * expose HTTP method to update Coupon
+     * @param token token for a session
+     * @param coupon coupon to update
+     * @return update coupon and HTTP status
+     */
     @PutMapping("coupon")
     public ResponseEntity<Coupon> updateCoupon(@RequestHeader("Authorization") String token, @RequestBody Coupon coupon) {
         sessionManager.validateToken(token, ClientType.Company);
@@ -62,6 +94,12 @@ public class CompanyController {
         return new ResponseEntity<>(coupon, HttpStatus.OK);
     }
 
+    /**
+     * exposes HTTP method to delete coupon
+     * @param token token for a session
+     * @param id id of coupon to dekete
+     * @return HTTP status
+     */
     @DeleteMapping("coupon/{id}")
     public ResponseEntity<String> deleteCoupon(@RequestHeader("Authorization") String token, @PathVariable Integer id) {
         sessionManager.validateToken(token, ClientType.Company);
@@ -70,6 +108,11 @@ public class CompanyController {
         return new ResponseEntity<>("Successfully deleted coupon " + id, HttpStatus.OK);
     }
 
+    /**
+     * exposes HTTP method to get company coupons
+     * @param token token for session
+     * @return list of coupons and HTTP status
+     */
     @GetMapping("coupons")
     public ResponseEntity<List<Coupon>> getCompanyCoupons(@RequestHeader("Authorization") String token) {
         sessionManager.validateToken(token, ClientType.Company);
@@ -78,6 +121,12 @@ public class CompanyController {
         return new ResponseEntity<>(coupons, HttpStatus.OK);
     }
 
+    /**
+     * expose Http method to get company coupons by category
+     * @param token token for session
+     * @param categoryId id of the category
+     * @return list of coupons and HTTP status
+     */
     @GetMapping(name = "coupons", params = "categoryId")
     public ResponseEntity<List<Coupon>> getCompanyCouponsByCategory(@RequestHeader("Authorization") String token, @RequestParam int categoryId) {
         sessionManager.validateToken(token, ClientType.Company);
@@ -86,6 +135,12 @@ public class CompanyController {
         return new ResponseEntity<>(coupons, HttpStatus.OK);
     }
 
+    /**
+     * exposes HTTP method to get company coupons by max prise
+     * @param token token for session
+     * @param maxPrice max prise
+     * @return company and HTTP status
+     */
     @GetMapping(value = "coupons", params = "maxPrice")
     public ResponseEntity<List<Coupon>> getCompanyCouponsByMaxPrice(@RequestHeader("Authorization") String token, @RequestParam double maxPrice) {
         sessionManager.validateToken(token, ClientType.Company);
@@ -94,6 +149,11 @@ public class CompanyController {
         return new ResponseEntity<>(coupons, HttpStatus.OK);
     }
 
+    /**
+     * expose HTTP method top get company details
+     * @param token token for a session
+     * @return company and HTTP status
+     */
     @GetMapping("details")
     public ResponseEntity<Company> getCompanyDetails(@RequestHeader("Authorization") String token) {
         sessionManager.validateToken(token, ClientType.Company);

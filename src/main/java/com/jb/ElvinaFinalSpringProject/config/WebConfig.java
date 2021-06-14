@@ -4,6 +4,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * Object to store web Configurations
+ */
+
 @Configuration
 public class WebConfig {
     @Bean

@@ -9,12 +9,20 @@ import org.springframework.stereotype.Component;
 import java.sql.Date;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Implementation for the ScheduledTaskManager, that contains the logic of daily cleaning job
+ */
 @Slf4j
 @Component
 public class ScheduledTaskManagerImpl implements ScheduledTaskManager {
     private final CouponRepository couponRepository;
     private boolean cleanExpiredCoupons;
 
+    /**
+     * Constructor of ScheduledTaskManagerImpl object
+     * @param sessionRepository sessionRepository of the ScheduledTaskManagerImpl type
+     * @param couponRepository couponRepository of the ScheduledTaskManagerImpl type
+     */
     public ScheduledTaskManagerImpl(SessionRepository sessionRepository, CouponRepository couponRepository) {
         this.couponRepository = couponRepository;
         this.cleanExpiredCoupons = true;
@@ -22,6 +30,9 @@ public class ScheduledTaskManagerImpl implements ScheduledTaskManager {
         cleanExpiredCouponsThread.start();
     }
 
+    /**
+     * Method used to clear expired coupons
+     */
     private void clearExpiredCoupons() {
         while (true) {
             try {
@@ -43,12 +54,18 @@ public class ScheduledTaskManagerImpl implements ScheduledTaskManager {
         }
     }
 
+    /**
+     * Method used to start daily cleaning for the expired coupons
+     */
     @Override
     public void startExpiredCouponDailyClean() {
         log.info("Starting clean expired coupons daily job");
         this.cleanExpiredCoupons = true;
     }
 
+    /**
+     * Method used to stop daily cleaning for the expired coupons
+     */
     @Override
     public void stopExpiredCouponDailyClean() {
         log.info("Stopping clean expired coupons daily job");

@@ -22,6 +22,10 @@ import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation for the CompanyService, that contains the logic of Customer Service functions
+ */
+
 @Service
 @Slf4j
 public class CustomerServiceImpl implements CustomerService {
@@ -31,6 +35,14 @@ public class CustomerServiceImpl implements CustomerService {
     private final CouponRepository couponRepository;
     private final SessionManager sessionManager;
 
+    /**
+     * Constructor of the CustomerService type object
+     * @param beanValidator beanValidator of CustomerServiceImpl object
+     * @param companyRepository companyRepository of CustomerServiceImpl object
+     * @param customerRepository customerRepository of CustomerServiceImpl object
+     * @param couponRepository couponRepository of CustomerServiceImpl object
+     * @param sessionManager sessionManager of CustomerServiceImpl object
+     */
     @Autowired
     public CustomerServiceImpl(BeanValidator beanValidator, CompanyRepository companyRepository, CustomerRepository customerRepository, CouponRepository couponRepository, SessionManager sessionManager) {
         this.beanValidator = beanValidator;
@@ -40,6 +52,13 @@ public class CustomerServiceImpl implements CustomerService {
         this.sessionManager = sessionManager;
     }
 
+    /**
+     * Method to login Customer Service
+     * @param email email for login
+     * @param password password for login
+     * @return returns session if succseeded to login and null if not
+     * @throws CustomerServiceException exception
+     */
     @Override
     public Session login(String email, String password) throws CustomerServiceException {
         try {
@@ -53,11 +72,22 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
+    /**
+     * Method to logout Customer Service
+     * @param token token for logout
+     */
     @Override
     public void logout(String token) {
         sessionManager.deleteSession(token);
     }
 
+    /**
+     * Method to purchase coupon
+     * @param customerId customer id
+     * @param coupon coupon to purchase
+     * @throws CustomerServiceException exception
+     * @throws InvalidCouponException exception
+     */
     @Override
     public void purchaseCoupon(int customerId, Coupon coupon) throws CustomerServiceException, InvalidCouponException {
         if (!beanValidator.validate(coupon)) {
@@ -94,7 +124,12 @@ public class CustomerServiceImpl implements CustomerService {
             throw new CustomerServiceException("Something gone wrong when we tried to purchase coupon" + e.getMessage());
         }
     }
-
+    /**
+     * Method to get customer coupons by customer id
+     * @param customerId customer id
+     * @return List of coupons
+     * @throws CustomerServiceException exception
+     */
     @Override
     public List<Coupon> getCustomerCoupons(int customerId) throws CustomerServiceException {
         try {
@@ -103,7 +138,13 @@ public class CustomerServiceImpl implements CustomerService {
             throw new CustomerServiceException("Something gone wrong when we tried to get customer coupons" + e.getMessage());
         }
     }
-
+    /**
+     * Method to get customer coupons by customer id and category
+     * @param customerId customer id for coupons
+     * @param category category
+     * @return List of coupons
+     * @throws CustomerServiceException exception
+     */
     @Override
     public List<Coupon> getCustomerCoupons(int customerId, Category category) throws CustomerServiceException {
         try {
@@ -115,7 +156,13 @@ public class CustomerServiceImpl implements CustomerService {
             throw new CustomerServiceException("Something gone wrong when we tried to get customer coupons by category" + e.getMessage());
         }
     }
-
+    /**
+     * Method to get customer coupons by customer id and max price
+     * @param customerId customer id for coupons
+     * @param maxPrice max price of the coupon
+     * @return List of coupons
+     * @throws CustomerServiceException exception
+     */
     @Override
     public List<Coupon> getCustomerCoupons(int customerId, double maxPrice) throws CustomerServiceException {
         try {
@@ -127,7 +174,12 @@ public class CustomerServiceImpl implements CustomerService {
             throw new CustomerServiceException("Something gone wrong when we tried to get customer coupons by max price" + e.getMessage());
         }
     }
-
+    /**
+     * Method to get customer details
+     * @param customerId customer id to get details
+     * @return details of the customer
+     * @throws CustomerServiceException exception
+     */
     @Override
     public Customer getCustomerDetails(int customerId) throws CustomerServiceException {
         try {

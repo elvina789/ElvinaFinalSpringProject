@@ -16,9 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
+
+/**
+ * Implementation for the CompanyService, that contains the logic of Company Service functions
+ */
 
 @Service
 @Slf4j
@@ -28,7 +30,14 @@ public class CompanyServiceImpl implements CompanyService {
     private final CouponRepository couponRepository;
     private final SessionManager sessionManager;
 
-
+    /**
+     * Constructor of the CompanyService type object
+     *
+     * @param beanValidator     beanValidator of CompanyServiceImpl object
+     * @param companyRepository companyRepository of CompanyServiceImpl object
+     * @param couponRepository  couponRepository of CompanyServiceImpl object
+     * @param sessionManager    sessionManager of CompanyServiceImpl object
+     */
     @Autowired
     public CompanyServiceImpl(BeanValidator beanValidator, CompanyRepository companyRepository, CouponRepository couponRepository, SessionManager sessionManager) {
         this.beanValidator = beanValidator;
@@ -37,6 +46,14 @@ public class CompanyServiceImpl implements CompanyService {
         this.sessionManager = sessionManager;
     }
 
+    /**
+     * Method to login Company Service
+     *
+     * @param email    email for login
+     * @param password password for login
+     * @return returns session if succseeded to login and null if not
+     * @throws CompanyServiceException exception
+     */
     @Override
     public Session login(String email, String password) throws CompanyServiceException {
         try {
@@ -50,11 +67,24 @@ public class CompanyServiceImpl implements CompanyService {
         }
     }
 
+    /**
+     * Method to logout Company Service
+     *
+     * @param token token for logout
+     */
     @Override
     public void logout(String token) {
         sessionManager.deleteSession(token);
     }
 
+    /**
+     * Method to add coupon
+     *
+     * @param companyId company id for adding coupon
+     * @param coupon    coupon to add
+     * @throws CompanyServiceException exception
+     * @throws InvalidCouponException  exception
+     */
     @Override
     public void addCoupon(int companyId, Coupon coupon) throws CompanyServiceException, InvalidCouponException {
         if (!beanValidator.validate(coupon)) {
@@ -76,6 +106,15 @@ public class CompanyServiceImpl implements CompanyService {
         }
     }
 
+    /**
+     * +
+     * Method to update coupon
+     *
+     * @param companyId company id for updating coupon
+     * @param coupon    coupon to update
+     * @throws CompanyServiceException exception
+     * @throws InvalidCouponException  exception
+     */
     @Override
     public void updateCoupon(int companyId, Coupon coupon) throws CompanyServiceException, InvalidCouponException {
         if (!beanValidator.validate(coupon)) {
@@ -100,6 +139,14 @@ public class CompanyServiceImpl implements CompanyService {
         }
     }
 
+    /**
+     * Method to delete Coupon
+     *
+     * @param companyId company id for deleting coupon
+     * @param couponID  coupon id that we want to delete
+     * @throws CompanyServiceException exception
+     */
+
     @Override
     public void deleteCoupon(int companyId, int couponID) throws CompanyServiceException {
         try {
@@ -118,6 +165,13 @@ public class CompanyServiceImpl implements CompanyService {
         }
     }
 
+    /**
+     * Method to get Company coupons by company id
+     *
+     * @param companyID company id to get coupons
+     * @return list of coupons
+     * @throws CompanyServiceException exception
+     */
 
     @Override
     public List<Coupon> getCompanyCoupons(int companyID) throws CompanyServiceException {
@@ -128,6 +182,14 @@ public class CompanyServiceImpl implements CompanyService {
         }
     }
 
+    /**
+     * Method to get company coupons by company id and category
+     *
+     * @param companyID company id for getting company coupons
+     * @param category  category of the the company
+     * @return List of the Coupons
+     * @throws CompanyServiceException exception
+     */
     @Override
     public List<Coupon> getCompanyCoupons(int companyID, Category category) throws CompanyServiceException {
         try {
@@ -137,6 +199,14 @@ public class CompanyServiceImpl implements CompanyService {
         }
     }
 
+    /**
+     * Method to get Company coupons by company id and max price
+     *
+     * @param companyID company id for getting company coupons
+     * @param maxPrice  max price of the coupon
+     * @return List of the coupons
+     * @throws CompanyServiceException exception
+     */
     @Override
     public List<Coupon> getCompanyCoupons(int companyID, double maxPrice) throws CompanyServiceException {
         try {
@@ -146,6 +216,13 @@ public class CompanyServiceImpl implements CompanyService {
         }
     }
 
+    /**
+     * Method to get Company Details by company id
+     *
+     * @param companyID id to get company details
+     * @return the detail of the company
+     * @throws CompanyServiceException exception
+     */
     @Override
     public Company getCompanyDetails(int companyID) throws CompanyServiceException {
         try {

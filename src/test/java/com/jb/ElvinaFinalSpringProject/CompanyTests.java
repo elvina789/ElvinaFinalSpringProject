@@ -120,6 +120,7 @@ public class CompanyTests {
         log.info("Expected:");
         log.info("Expected response status {}", expectedStatus);
         ResponseEntity<List<Coupon>> response = companyController.getCompanyCouponsByCategory(session.getToken(), Category.Electricity.getId());
+        log.info("Actual:");
         log.info("Actual response status {}", response.getStatusCode());
         Assert.isTrue(response.getStatusCode().equals(expectedStatus), "Status returned not as expected");
         List<Coupon> coupons = response.getBody();
@@ -177,43 +178,61 @@ public class CompanyTests {
         int id = couponTemplates.get(0).getId();
         ResponseEntity<?> deleteResponse = companyController.deleteCoupon(session.getToken(), id);
         log.info("Actual response status {}", deleteResponse.getStatusCode());
+        log.info("Coupon {} not found after delete", id);
         Assert.isTrue(deleteResponse.getStatusCode().equals(expectedStatus), "Status returned not as expected");
         ResponseEntity<?> getCouponsResponse = companyController.getCompanyCoupons(session.getToken());
         Assert.isTrue(getCouponsResponse.getStatusCode().equals(expectedStatus), "Status returned not as expected");
         List<Coupon> coupons = (List<Coupon>) getCouponsResponse.getBody();
         boolean notFound = coupons.stream().noneMatch(e -> e.getId() == id);
         Assert.isTrue(notFound, "Coupon found after deleting");
-        log.info("Coupon successfully deleted");
+
     }
 
     @Test
     @Order(7)
     void updateCouponTest() {
+        HttpStatus expectedStatus = HttpStatus.OK;
+        log.info("Expected:");
+        log.info("Expected response status {}", expectedStatus);
         Coupon coupon = couponTemplates.get(1);
         int newAmount = 400;
         coupon.setAmount(newAmount);
         ResponseEntity<?> updateResponse = companyController.updateCoupon(session.getToken(), coupon);
-        Assert.isTrue(updateResponse.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
+        log.info("Actual:");
+        log.info("Actual response status {}", updateResponse.getStatusCode());
+        Assert.isTrue(updateResponse.getStatusCode().equals(expectedStatus), "Status returned not as expected");
         ResponseEntity<?> getCouponsResponse = companyController.getCompanyCoupons(session.getToken());
-        Assert.isTrue(getCouponsResponse.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
+        Assert.isTrue(getCouponsResponse.getStatusCode().equals(expectedStatus), "Status returned not as expected");
         List<Coupon> coupons = (List<Coupon>) getCouponsResponse.getBody();
         boolean anyMatch = coupons.stream().anyMatch(e -> e.getId() == coupon.getId() && e.getAmount() == newAmount);
         Assert.isTrue(anyMatch, "Amount not updated for coupon");
+        log.info("Coupon successfully updated");
     }
 
     @Test
     @Order(8)
     void companyDetailsTest() {
+        HttpStatus expectedStatus = HttpStatus.OK;
+        log.info("Expected:");
+        log.info("Expected response status {}", expectedStatus);
         ResponseEntity<?> response = companyController.getCompanyDetails(session.getToken());
-        Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
+        log.info("Actual:");
+        log.info("Actual response status  {}", response.getStatusCode());
+        Assert.isTrue(response.getStatusCode().equals(expectedStatus), "Status returned not as expected");
         Company companyDetails = (Company) response.getBody();
         Assert.isTrue(company.equals(companyDetails), "Company details returned incorrectly");
+
     }
 
     @Test
     @Order(9)
     void logOut() {
+        HttpStatus expectedStatus = HttpStatus.OK;
+        log.info("Expected:");
+        log.info("Expected response status {}", expectedStatus);
         ResponseEntity<?> response = companyController.logout(session.getToken());
-        Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
+        log.info("Actual:");
+        log.info("Actual response status  {}", response.getStatusCode());
+        Assert.isTrue(response.getStatusCode().equals(expectedStatus), "Status returned not as expected");
     }
 }

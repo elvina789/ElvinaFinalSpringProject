@@ -18,8 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Base64;
 import java.util.List;
+
+/**
+ * Implementation for the AdminService, that contains the logic of Admin Service functions
+ */
 
 @Service
 @Slf4j
@@ -30,6 +33,15 @@ public class AdminServiceImpl implements AdminService {
     private final CouponRepository couponRepository;
     private final SessionManager sessionManager;
 
+    /**
+     * Constructor of the AdminServiceImpl type object
+     *
+     * @param beanValidator      beanValidator of AdminServiceImpl object
+     * @param companyRepository  companyRepository of AdminServiceImpl object
+     * @param customerRepository customerRepository of AdminServiceImpl object
+     * @param couponRepository   couponRepository of AdminServiceImpl object
+     * @param sessionManager     sessionManager of AdminServiceImpl object
+     */
     @Autowired
     public AdminServiceImpl(BeanValidator beanValidator, CompanyRepository companyRepository, CustomerRepository customerRepository, CouponRepository couponRepository, SessionManager sessionManager) {
         this.beanValidator = beanValidator;
@@ -39,6 +51,13 @@ public class AdminServiceImpl implements AdminService {
         this.sessionManager = sessionManager;
     }
 
+    /**
+     * Method to login Admin Service
+     *
+     * @param email    email for login
+     * @param password password for login
+     * @return returns session if succseeded to login and null if not
+     */
     @Override
     public Session login(String email, String password) {
 //        email = new String(Base64.getDecoder().decode(email));
@@ -50,11 +69,23 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+    /**
+     * Method to logout Admin Service
+     *
+     * @param token token for logout
+     */
     @Override
     public void logout(String token) {
         sessionManager.deleteSession(token);
     }
 
+    /**
+     * Method to add Company
+     *
+     * @param company company to add
+     * @throws InvalidCompanyException exception
+     * @throws AdminServiceException   exception
+     */
     @Override
     public void addCompany(Company company) throws InvalidCompanyException, AdminServiceException {
         log.info("Calling addCompany()");
@@ -74,6 +105,13 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+    /**
+     * Method to update Company
+     *
+     * @param company company to update
+     * @throws AdminServiceException   exception
+     * @throws InvalidCompanyException exception
+     */
     @Override
     public void updateCompany(Company company) throws AdminServiceException, InvalidCompanyException {
         log.info("Calling updateCompany()");
@@ -95,6 +133,12 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+    /**
+     * Method to delete Company
+     *
+     * @param companyId id of the company that we want to delete
+     * @throws AdminServiceException exeption
+     */
     @Override
     public void deleteCompany(int companyId) throws AdminServiceException {
         try {
@@ -108,6 +152,12 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+    /**
+     * Method that gets all companies
+     *
+     * @return List of companies
+     * @throws AdminServiceException exception
+     */
     @Override
     public List<Company> getAllCompanies() throws AdminServiceException {
         try {
@@ -116,6 +166,14 @@ public class AdminServiceImpl implements AdminService {
             throw new AdminServiceException("Something gone wrong when we tried to get all customers " + e.getMessage());
         }
     }
+
+    /**
+     * Method to get one company
+     *
+     * @param companyId id to get company
+     * @return company
+     * @throws AdminServiceException exception
+     */
 
     @Override
     public Company getOneCompany(int companyId) throws AdminServiceException {
@@ -130,6 +188,13 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+    /**
+     * Method that adds customer
+     *
+     * @param customer customer that we want to edd
+     * @throws AdminServiceException    exception
+     * @throws InvalidCustomerException exception
+     */
     @Override
     public void addCustomer(Customer customer) throws AdminServiceException, InvalidCustomerException {
         log.info("Calling addCustomer()");
@@ -147,6 +212,13 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+    /**
+     * Method to update Customer
+     *
+     * @param customer customer that we want to update
+     * @throws AdminServiceException    exception
+     * @throws InvalidCustomerException exception
+     */
 
     @Override
     public void updateCustomer(Customer customer) throws AdminServiceException, InvalidCustomerException {
@@ -164,6 +236,9 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+    /**
+     * Method to delete customer by its id
+     */
     @Override
     public void deleteCustomer(int customerId) throws AdminServiceException {
         try {
@@ -177,6 +252,12 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+    /**
+     * Method to get all customers
+     *
+     * @return list of customers
+     * @throws AdminServiceException exception
+     */
     @Override
     public List<Customer> getAllCustomers() throws AdminServiceException {
         try {
@@ -186,6 +267,13 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+    /**
+     * Method to get one customer by its id
+     *
+     * @param customerId customer id
+     * @return customer
+     * @throws AdminServiceException exception
+     */
     @Override
     public Customer getOneCustomer(int customerId) throws AdminServiceException {
         try {

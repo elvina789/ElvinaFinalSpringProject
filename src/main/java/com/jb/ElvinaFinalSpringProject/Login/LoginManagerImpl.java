@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+/**
+ * Implementation for the Login Manager, that contains the logic to login and logout functions
+ */
 @Component
 public class LoginManagerImpl implements LoginManager {
     private final ApplicationContext applicationContext;
