@@ -50,8 +50,8 @@ public class AdminController {
      * @param credentials object stores credentials of the user
      * @return session and HTTP Status if succeeded to login, and if not only HTTP status
      */
-    @PostMapping("login")
     @CrossOrigin
+    @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody LoginCredentials credentials) {
         Session session = loginManager.login(credentials.getEmail(), credentials.getPassword(), ClientType.Administrator);
         if (session != null) {
@@ -67,8 +67,8 @@ public class AdminController {
      * @param token token for a session
      * @return HTTP status
      */
-    @PostMapping("logout")
     @CrossOrigin
+    @PostMapping("logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
         sessionManager.validateToken(token, ClientType.Administrator);
         loginManager.logout(token, ClientType.Administrator);
@@ -82,8 +82,8 @@ public class AdminController {
      * @param customer customer to add
      * @return token amd HTTP status
      */
-    @PostMapping("customer")
     @CrossOrigin
+    @PostMapping("customer")
     public ResponseEntity<Customer> addCustomer(@RequestHeader("Authorization") String token, @RequestBody Customer customer) {
         sessionManager.validateToken(token, ClientType.Administrator);
         adminService.addCustomer(customer);
@@ -98,8 +98,8 @@ public class AdminController {
      * @param customer customer yo update
      * @return returns updated customer and HTTP status
      */
-    @PutMapping("customer")
     @CrossOrigin
+    @PutMapping("customer")
     public ResponseEntity<Customer> updateCustomer(@RequestHeader("Authorization") String token, @RequestBody Customer customer) {
         sessionManager.validateToken(token, ClientType.Administrator);
         adminService.updateCustomer(customer);
@@ -113,8 +113,8 @@ public class AdminController {
      * @param id    id of customer
      * @return if customer is null returns HTTP status only, if customer is not null, returns customer and HTTP status
      */
-    @GetMapping("customer/{id}")
     @CrossOrigin
+    @GetMapping("customer/{id}")
     public ResponseEntity<Customer> getOneCustomer(@RequestHeader("Authorization") String token, @PathVariable Integer id) {
         sessionManager.validateToken(token, ClientType.Administrator);
         Customer customer = adminService.getOneCustomer(id);
@@ -132,8 +132,8 @@ public class AdminController {
      * @param id    id of customer
      * @return Http status
      */
-    @DeleteMapping("customer/{id}")
     @CrossOrigin
+    @DeleteMapping("customer/{id}")
     public ResponseEntity<String> deleteCustomer(@RequestHeader("Authorization") String token, @PathVariable Integer id) {
         sessionManager.validateToken(token, ClientType.Administrator);
         adminService.deleteCustomer(id);
@@ -146,8 +146,8 @@ public class AdminController {
      * @param token token for a session
      * @return list of companies and HTTP status
      */
-    @GetMapping("customers")
     @CrossOrigin
+    @GetMapping("customers")
     public ResponseEntity<List<Customer>> getAllCustomers(@RequestHeader("Authorization") String token) {
         sessionManager.validateToken(token, ClientType.Administrator);
         List<Customer> companies = adminService.getAllCustomers();
@@ -161,8 +161,8 @@ public class AdminController {
      * @param company company to add
      * @return company and HTTP status
      */
-    @PostMapping("company")
     @CrossOrigin
+    @PostMapping("company")
     public ResponseEntity<Company> addCompany(@RequestHeader("Authorization") String token, @RequestBody Company company) {
         sessionManager.validateToken(token, ClientType.Administrator);
         adminService.addCompany(company);
@@ -176,8 +176,8 @@ public class AdminController {
      * @param company company to update
      * @return returns company and HTTP status
      */
-    @PutMapping("company")
     @CrossOrigin
+    @PutMapping("company")
     public ResponseEntity<Company> updateCompany(@RequestHeader("Authorization") String token, @RequestBody Company company) {
         sessionManager.validateToken(token, ClientType.Administrator);
         adminService.updateCompany(company);
@@ -191,8 +191,8 @@ public class AdminController {
      * @param id    id of the company
      * @return if companmy is null returns HTTP status only, if company not null returns company and HTTP status
      */
-    @GetMapping("company/{id}")
     @CrossOrigin
+    @GetMapping("company/{id}")
     public ResponseEntity<Company> getOneCompany(@RequestHeader("Authorization") String token, @PathVariable Integer id) {
         sessionManager.validateToken(token, ClientType.Administrator);
         Company company = adminService.getOneCompany(id);
@@ -210,8 +210,8 @@ public class AdminController {
      * @param id    id of the company
      * @return HTTP status
      */
-    @DeleteMapping("company/{id}")
     @CrossOrigin
+    @DeleteMapping("company/{id}")
     public ResponseEntity<String> deleteCompany(@RequestHeader("Authorization") String token, @PathVariable Integer id) {
         sessionManager.validateToken(token, ClientType.Administrator);
         adminService.deleteCompany(id);
@@ -224,8 +224,8 @@ public class AdminController {
      * @param token token for a session
      * @return list of companies and HTTP status
      */
-    @DeleteMapping("companies")
     @CrossOrigin
+    @GetMapping("companies")
     public ResponseEntity<List<Company>> getAllCompanies(@RequestHeader("Authorization") String token) {
         sessionManager.validateToken(token, ClientType.Administrator);
         List<Company> companies = adminService.getAllCompanies();
@@ -238,8 +238,8 @@ public class AdminController {
      * @param token token for a session
      * @return HTTP status
      */
-    @PostMapping("cleaning/start")
     @CrossOrigin
+    @PostMapping("cleaning/start")
     public ResponseEntity<String> startCleaningJob(@RequestHeader("Authorization") String token) {
         sessionManager.validateToken(token, ClientType.Administrator);
         scheduledTaskManager.startExpiredCouponDailyClean();
@@ -252,8 +252,8 @@ public class AdminController {
      * @param token token for a sesion
      * @return token for a session
      */
-    @PostMapping("cleaning/stop")
     @CrossOrigin
+    @PostMapping("cleaning/stop")
     public ResponseEntity<String> stopCleaningJob(@RequestHeader("Authorization") String token) {
         sessionManager.validateToken(token, ClientType.Administrator);
         scheduledTaskManager.stopExpiredCouponDailyClean();
