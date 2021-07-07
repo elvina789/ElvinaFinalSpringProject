@@ -53,7 +53,7 @@ public class CustomerController {
         if (session != null) {
             return new ResponseEntity<>(session, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Incorrect email or password", HttpStatus.OK);
+            return new ResponseEntity<>("Incorrect email or password", HttpStatus.UNAUTHORIZED);
         }
     }
 

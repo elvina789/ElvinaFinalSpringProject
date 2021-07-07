@@ -78,7 +78,7 @@ class AdminTests {
     @Test
     @Order(1)
     void loginTestIncorrectCredentials() {
-        HttpStatus expectedStatus = HttpStatus.OK;
+        HttpStatus expectedStatus = HttpStatus.UNAUTHORIZED;
         String expectedBody = "Incorrect email or password";
         log.info("Expected:");
         log.info("Expected response status {}", expectedStatus);

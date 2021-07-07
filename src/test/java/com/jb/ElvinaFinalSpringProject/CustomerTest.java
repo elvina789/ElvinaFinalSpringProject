@@ -99,7 +99,7 @@ public class CustomerTest {
         ResponseEntity<?> response = customerController.login(credentials);
         log.info("Returned response status {}", response.getStatusCode());
         log.info("Returned response body {}", response.getBody());
-        Assert.isTrue(response.getStatusCode().equals(HttpStatus.OK), "Status returned not as expected");
+        Assert.isTrue(response.getStatusCode().equals(HttpStatus.UNAUTHORIZED), "Status returned not as expected");
         Assert.isTrue("Incorrect email or password".equals(response.getBody()));
     }
 

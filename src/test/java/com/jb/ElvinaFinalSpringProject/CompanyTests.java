@@ -82,7 +82,7 @@ public class CompanyTests {
     @Test
     @Order(1)
     void loginTestIncorrectCredentials() {
-        HttpStatus expectedStatus = HttpStatus.OK;
+        HttpStatus expectedStatus = HttpStatus.UNAUTHORIZED;
         log.info("Expected:");
         log.info("Expected response status {}", expectedStatus);
         LoginCredentials credentials = LoginCredentials.builder()
