@@ -48,6 +48,10 @@ public interface CouponRepository extends JpaRepository<Coupon, Integer> {
      * @param date date to use in query
      */
     void deleteByEndDateBefore(Date date);
+
+    Coupon getCouponByIdAndCompanyId(int id, int companyId);
+
+    List<Coupon> getCouponsByAmountGreaterThan(int amount);
 }
 
 

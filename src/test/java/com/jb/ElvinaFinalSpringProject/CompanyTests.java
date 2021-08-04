@@ -119,7 +119,7 @@ public class CompanyTests {
         HttpStatus expectedStatus = HttpStatus.OK;
         log.info("Expected:");
         log.info("Expected response status {}", expectedStatus);
-        ResponseEntity<List<Coupon>> response = companyController.getCompanyCouponsByCategory(session.getToken(), Category.Electricity.getId());
+        ResponseEntity<List<Coupon>> response = companyController.getCompanyCouponsByCategoryId(session.getToken(), Category.Electricity.getId());
         log.info("Actual:");
         log.info("Actual response status {}", response.getStatusCode());
         Assert.isTrue(response.getStatusCode().equals(expectedStatus), "Status returned not as expected");

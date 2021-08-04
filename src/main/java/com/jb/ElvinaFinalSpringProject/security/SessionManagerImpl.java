@@ -3,6 +3,8 @@ package com.jb.ElvinaFinalSpringProject.security;
 import com.jb.ElvinaFinalSpringProject.Beans.Enums.ClientType;
 import com.jb.ElvinaFinalSpringProject.Beans.Session;
 import com.jb.ElvinaFinalSpringProject.Exeptions.InvalidTokenException;
+import com.jb.ElvinaFinalSpringProject.Repositories.CompanyRepository;
+import com.jb.ElvinaFinalSpringProject.Repositories.CustomerRepository;
 import com.jb.ElvinaFinalSpringProject.Repositories.SessionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
@@ -19,14 +21,18 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class SessionManagerImpl implements SessionManager {
     SessionRepository sessionRepository;
+    CompanyRepository companyRepository;
+    CustomerRepository customerRepository;
 
     /**
      * Constructor of the SessionManagerImpl object
      * @param sessionRepository sessionRepository of the SessionManagerImpl
      */
     @Autowired
-    public SessionManagerImpl(SessionRepository sessionRepository) {
+    public SessionManagerImpl(SessionRepository sessionRepository, CompanyRepository companyRepository, CustomerRepository customerRepository) {
         this.sessionRepository = sessionRepository;
+        this.companyRepository = companyRepository;
+        this.customerRepository = customerRepository;
         new Thread(this::clearExpiredRecords).start();
     }
     /**
@@ -76,8 +82,14 @@ public class SessionManagerImpl implements SessionManager {
         boolean valid = false;
         if (sessionRepository.existsById(token)) {
             Session session = sessionRepository.getOne(token);
-            valid = clientType.getId() == session.getClientType() &&
-                    DateTime.now().getMillis() <= session.getExpirationDate();
+            valid = clientType.getId() == session.getClientType() && DateTime.now().getMillis() <= session.getExpirationDate();
+            if (valid) {
+                if (clientType.equals(ClientType.Customer)) {
+                    valid = customerRepository.existsById(session.getBeanId());
+                } else if (clientType.equals(ClientType.Company)) {
+                    valid = companyRepository.existsById(session.getBeanId());
+                }
+            }
         }
         if (!valid) {
             throw new InvalidTokenException();

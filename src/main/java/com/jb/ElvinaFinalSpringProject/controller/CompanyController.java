@@ -28,10 +28,11 @@ public class CompanyController {
 
     /**
      * Constructor of the Company controller type object
+     *
      * @param companyService companyService of CompanyController object
-     * @param loginManager loginManager of CompanyController object
+     * @param loginManager   loginManager of CompanyController object
      * @param sessionManager sessionManager of CompanyController object
-      */
+     */
     @Autowired
     public CompanyController(CompanyService companyService, LoginManager loginManager, SessionManager sessionManager) {
         this.companyService = companyService;
@@ -41,11 +42,12 @@ public class CompanyController {
 
     /**
      * expose HTTP method to login
+     *
      * @param credentials object stores credentials of the user
      * @return session and HTTP Status if succeeded to login, and if not only HTTP status
      */
-    @PostMapping("login")
     @CrossOrigin
+    @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody LoginCredentials credentials) {
         Session session = loginManager.login(credentials.getEmail(), credentials.getPassword(), ClientType.Company);
         if (session != null) {
@@ -61,8 +63,8 @@ public class CompanyController {
      * @param token token for a session
      * @return HTTP status
      */
-    @PostMapping("logout")
     @CrossOrigin
+    @PostMapping("logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
         sessionManager.validateToken(token, ClientType.Company);
         loginManager.logout(token, ClientType.Company);
@@ -71,12 +73,13 @@ public class CompanyController {
 
     /**
      * exposes HTTP method to add coupon
-     * @param token token for a session
+     *
+     * @param token  token for a session
      * @param coupon coupon to add
      * @return coupon and HTTP status
      */
-    @PostMapping("coupon")
     @CrossOrigin
+    @PostMapping("coupon")
     public ResponseEntity<Coupon> addCoupon(@RequestHeader("Authorization") String token, @RequestBody Coupon coupon) {
         Session session = sessionManager.getSession(token);
         companyService.addCoupon(session.getBeanId(), coupon);
@@ -85,12 +88,13 @@ public class CompanyController {
 
     /**
      * expose HTTP method to update Coupon
-     * @param token token for a session
+     *
+     * @param token  token for a session
      * @param coupon coupon to update
      * @return update coupon and HTTP status
      */
-    @PutMapping("coupon")
     @CrossOrigin
+    @PutMapping("coupon")
     public ResponseEntity<Coupon> updateCoupon(@RequestHeader("Authorization") String token, @RequestBody Coupon coupon) {
         sessionManager.validateToken(token, ClientType.Company);
         Session session = sessionManager.getSession(token);
@@ -100,12 +104,13 @@ public class CompanyController {
 
     /**
      * exposes HTTP method to delete coupon
+     *
      * @param token token for a session
-     * @param id id of coupon to dekete
+     * @param id    id of coupon to dekete
      * @return HTTP status
      */
-    @DeleteMapping("coupon/{id}")
     @CrossOrigin
+    @DeleteMapping("coupon/{id}")
     public ResponseEntity<String> deleteCoupon(@RequestHeader("Authorization") String token, @PathVariable Integer id) {
         sessionManager.validateToken(token, ClientType.Company);
         Session session = sessionManager.getSession(token);
@@ -113,13 +118,27 @@ public class CompanyController {
         return new ResponseEntity<>("Successfully deleted coupon " + id, HttpStatus.OK);
     }
 
+    @CrossOrigin
+    @GetMapping("coupon/{id}")
+    public ResponseEntity<Coupon> getCoupon(@RequestHeader("Authorization") String token, @PathVariable Integer id) {
+        sessionManager.validateToken(token, ClientType.Company);
+        Session session = sessionManager.getSession(token);
+        Coupon coupon = companyService.getCompanyCoupon(session.getBeanId(), id);
+        if (coupon == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(coupon, HttpStatus.FOUND);
+        }
+    }
+
     /**
      * exposes HTTP method to get company coupons
+     *
      * @param token token for session
      * @return list of coupons and HTTP status
      */
-    @GetMapping("coupons")
     @CrossOrigin
+    @GetMapping("coupons")
     public ResponseEntity<List<Coupon>> getCompanyCoupons(@RequestHeader("Authorization") String token) {
         sessionManager.validateToken(token, ClientType.Company);
         Session session = sessionManager.getSession(token);
@@ -129,13 +148,14 @@ public class CompanyController {
 
     /**
      * expose Http method to get company coupons by category
-     * @param token token for session
+     *
+     * @param token      token for session
      * @param categoryId id of the category
      * @return list of coupons and HTTP status
      */
-    @GetMapping(name = "coupons", params = "categoryId")
     @CrossOrigin
-    public ResponseEntity<List<Coupon>> getCompanyCouponsByCategory(@RequestHeader("Authorization") String token, @RequestParam int categoryId) {
+    @GetMapping(value = "coupons", params = "categoryId")
+    public ResponseEntity<List<Coupon>> getCompanyCouponsByCategoryId(@RequestHeader("Authorization") String token, @RequestParam int categoryId) {
         sessionManager.validateToken(token, ClientType.Company);
         Session session = sessionManager.getSession(token);
         List<Coupon> coupons = companyService.getCompanyCoupons(session.getBeanId(), Category.idToCategory(categoryId));
@@ -144,12 +164,13 @@ public class CompanyController {
 
     /**
      * exposes HTTP method to get company coupons by max prise
-     * @param token token for session
+     *
+     * @param token    token for session
      * @param maxPrice max prise
      * @return company and HTTP status
      */
-    @GetMapping(value = "coupons", params = "maxPrice")
     @CrossOrigin
+    @GetMapping(value = "coupons", params = "maxPrice")
     public ResponseEntity<List<Coupon>> getCompanyCouponsByMaxPrice(@RequestHeader("Authorization") String token, @RequestParam double maxPrice) {
         sessionManager.validateToken(token, ClientType.Company);
         Session session = sessionManager.getSession(token);
@@ -159,11 +180,12 @@ public class CompanyController {
 
     /**
      * expose HTTP method top get company details
+     *
      * @param token token for a session
      * @return company and HTTP status
      */
-    @GetMapping("details")
     @CrossOrigin
+    @GetMapping("details")
     public ResponseEntity<Company> getCompanyDetails(@RequestHeader("Authorization") String token) {
         sessionManager.validateToken(token, ClientType.Company);
         Session session = sessionManager.getSession(token);

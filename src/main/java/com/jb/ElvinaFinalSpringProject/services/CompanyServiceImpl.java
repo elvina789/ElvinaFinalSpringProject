@@ -87,15 +87,11 @@ public class CompanyServiceImpl implements CompanyService {
      */
     @Override
     public void addCoupon(int companyId, Coupon coupon) throws CompanyServiceException, InvalidCouponException {
-        if (!beanValidator.validate(coupon)) {
-            throw new InvalidCouponException();
-        }
-
-        if (coupon.getCompanyId() != companyId) {
-            throw new InvalidCouponException();
-        }
-
         try {
+            beanValidator.validate(coupon);
+            if (coupon.getCompanyId() != companyId) {
+                throw new InvalidCouponException();
+            }
             if (!couponRepository.existsCouponByCompanyIdAndTitle(coupon.getCompanyId(), coupon.getTitle())) {
                 couponRepository.save(coupon);
             } else {
@@ -117,15 +113,11 @@ public class CompanyServiceImpl implements CompanyService {
      */
     @Override
     public void updateCoupon(int companyId, Coupon coupon) throws CompanyServiceException, InvalidCouponException {
-        if (!beanValidator.validate(coupon)) {
-            throw new InvalidCouponException();
-        }
-
-        if (coupon.getCompanyId() != companyId) {
-            throw new InvalidCouponException();
-        }
-
         try {
+            beanValidator.validate(coupon);
+            if (coupon.getCompanyId() != companyId) {
+                throw new InvalidCouponException();
+            }
             if (!couponRepository.existsById(coupon.getId())) {
                 throw new CompanyServiceException("Coupon with id - " + coupon.getId() + " does not exist");
             }
@@ -229,6 +221,15 @@ public class CompanyServiceImpl implements CompanyService {
             return companyRepository.getOne(companyID);
         } catch (Exception e) {
             throw new CompanyServiceException("Something gone wrong when we tried to get company details " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Coupon getCompanyCoupon(int companyId, int couponId) {
+        try {
+            return couponRepository.getCouponByIdAndCompanyId(couponId, companyId);
+        } catch (Exception e) {
+            throw new CompanyServiceException("Something gone wrong when we tried to get coupon " + e.getMessage());
         }
     }
 }

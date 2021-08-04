@@ -14,7 +14,7 @@ public interface BeanValidator {
      * @param company company to validate
      * @return true if company is valid else false
      */
-    boolean validate(Company company);
+    void validate(Company company);
 
     /**
      * Method used to validate customer bean
@@ -22,7 +22,7 @@ public interface BeanValidator {
      * @param customer customer to validate
      * @return true if customer is valid else false
      */
-    boolean validate(Customer customer);
+    void validate(Customer customer);
 
     /**
      * Method used to validate coupon bean
@@ -30,5 +30,5 @@ public interface BeanValidator {
      * @param coupon coupon to validate
      * @return true if coupon is valid else false
      */
-    boolean validate(Coupon coupon);
+    void validate(Coupon coupon);
 }

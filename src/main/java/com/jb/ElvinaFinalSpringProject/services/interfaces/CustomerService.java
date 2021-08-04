@@ -74,4 +74,6 @@ public interface CustomerService {
      * @throws CustomerServiceException exception
      */
     Customer getCustomerDetails(int customerId) throws CustomerServiceException;
+
+    List<Coupon> getAvailableCoupons() throws CustomerServiceException;
 }

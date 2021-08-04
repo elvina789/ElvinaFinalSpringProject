@@ -90,9 +90,7 @@ public class AdminServiceImpl implements AdminService {
     public void addCompany(Company company) throws InvalidCompanyException, AdminServiceException {
         log.info("Calling addCompany()");
         try {
-            if (!beanValidator.validate(company)) {
-                throw new InvalidCompanyException();
-            }
+            beanValidator.validate(company);
             if (!companyRepository.existsCompanyByNameOrEmail(company.getName(), company.getEmail())) {
                 log.info("Writing company with id {} to database", company.getId());
                 companyRepository.save(company);
@@ -116,9 +114,7 @@ public class AdminServiceImpl implements AdminService {
     public void updateCompany(Company company) throws AdminServiceException, InvalidCompanyException {
         log.info("Calling updateCompany()");
         try {
-            if (!beanValidator.validate(company)) {
-                throw new InvalidCompanyException();
-            }
+            beanValidator.validate(company);
             if (!companyRepository.existsById(company.getId())) {
                 throw new AdminServiceException("Company with id - " + company.getId() + " does not exists");
             }
@@ -199,9 +195,7 @@ public class AdminServiceImpl implements AdminService {
     public void addCustomer(Customer customer) throws AdminServiceException, InvalidCustomerException {
         log.info("Calling addCustomer()");
         try {
-            if (!beanValidator.validate(customer)) {
-                throw new InvalidCustomerException();
-            }
+            beanValidator.validate(customer);
             if (!customerRepository.existsCustomerByEmail(customer.getEmail())) {
                 customerRepository.save(customer);
             } else {
@@ -224,10 +218,7 @@ public class AdminServiceImpl implements AdminService {
     public void updateCustomer(Customer customer) throws AdminServiceException, InvalidCustomerException {
         log.info("Calling updateCustomer()");
         try {
-            if (!beanValidator.validate(customer)) {
-                throw new InvalidCustomerException();
-            }
-
+            beanValidator.validate(customer);
             if (customerRepository.existsById(customer.getId())) {
                 customerRepository.save(customer);
             }

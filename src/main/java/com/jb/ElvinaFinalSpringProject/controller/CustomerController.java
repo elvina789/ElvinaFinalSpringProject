@@ -46,8 +46,8 @@ public class CustomerController {
      * @param credentials object stores credentials of the user
      * @return session and HTTP Status if succeeded to login, and if not only HTTP status
      */
-    @PostMapping("login")
     @CrossOrigin
+    @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody LoginCredentials credentials) {
         Session session = loginManager.login(credentials.getEmail(), credentials.getPassword(), ClientType.Customer);
         if (session != null) {
@@ -63,8 +63,8 @@ public class CustomerController {
      * @param token token for a session
      * @return HTTP status
      */
-    @PostMapping("logout")
     @CrossOrigin
+    @PostMapping("logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String token) {
         sessionManager.validateToken(token, ClientType.Customer);
         loginManager.logout(token, ClientType.Customer);
@@ -78,8 +78,8 @@ public class CustomerController {
      * @param coupon coupon to purchase
      * @return coupon and HTTP status
      */
-    @PostMapping("purchase")
     @CrossOrigin
+    @PostMapping("purchase")
     public ResponseEntity<Coupon> purchaseCoupon(@RequestHeader("Authorization") String token, @RequestBody Coupon coupon) {
         sessionManager.validateToken(token, ClientType.Customer);
         Session session = sessionManager.getSession(token);
@@ -93,8 +93,8 @@ public class CustomerController {
      * @param token token for a session
      * @return return  list of coupons and HTTP status
      */
-    @GetMapping("coupons")
     @CrossOrigin
+    @GetMapping("coupons")
     public ResponseEntity<List<Coupon>> getCustomerCoupons(@RequestHeader("Authorization") String token) {
         sessionManager.validateToken(token, ClientType.Customer);
         Session session = sessionManager.getSession(token);
@@ -109,8 +109,8 @@ public class CustomerController {
      * @param maxPrice max price of coupon
      * @return list of coupons and HTTP status
      */
-    @GetMapping(name = "coupons", params = "maxPrice")
     @CrossOrigin
+    @GetMapping(value = "coupons", params = "maxPrice")
     public ResponseEntity<List<Coupon>> getCustomerCouponsByMaxPrice(@RequestHeader("Authorization") String token, @RequestParam double maxPrice) {
         sessionManager.validateToken(token, ClientType.Customer);
         Session session = sessionManager.getSession(token);
@@ -125,8 +125,8 @@ public class CustomerController {
      * @param categoryId id of the category
      * @return list of  coupons and HTTP status
      */
-    @GetMapping(name = "coupons", params = "category")
     @CrossOrigin
+    @GetMapping(value = "coupons", params = "categoryId")
     public ResponseEntity<List<Coupon>> getCustomerCouponsByCategory(@RequestHeader("Authorization") String token, @RequestParam int categoryId) {
         sessionManager.validateToken(token, ClientType.Customer);
         Session session = sessionManager.getSession(token);
@@ -140,13 +140,21 @@ public class CustomerController {
      * @param token token for a session
      * @return customer and HTTP status
      */
-    @GetMapping("details")
     @CrossOrigin
+    @GetMapping("details")
     public ResponseEntity<Customer> getCustomerDetails(@RequestHeader("Authorization") String token) {
         sessionManager.validateToken(token, ClientType.Customer);
         Session session = sessionManager.getSession(token);
         Customer customer = customerService.getCustomerDetails(session.getBeanId());
         return new ResponseEntity<>(customer, HttpStatus.OK);
+    }
+
+    @CrossOrigin
+    @GetMapping("coupons/available")
+    public ResponseEntity<List<Coupon>> getAvailable(@RequestHeader("Authorization") String token) {
+        sessionManager.validateToken(token, ClientType.Customer);
+        List<Coupon> availableCoupons = customerService.getAvailableCoupons();
+        return new ResponseEntity<>(availableCoupons, HttpStatus.OK);
     }
 }
 

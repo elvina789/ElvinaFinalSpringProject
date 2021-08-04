@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,11 +36,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     /**
      * Constructor of the CustomerService type object
-     * @param beanValidator beanValidator of CustomerServiceImpl object
-     * @param companyRepository companyRepository of CustomerServiceImpl object
+     *
+     * @param beanValidator      beanValidator of CustomerServiceImpl object
+     * @param companyRepository  companyRepository of CustomerServiceImpl object
      * @param customerRepository customerRepository of CustomerServiceImpl object
-     * @param couponRepository couponRepository of CustomerServiceImpl object
-     * @param sessionManager sessionManager of CustomerServiceImpl object
+     * @param couponRepository   couponRepository of CustomerServiceImpl object
+     * @param sessionManager     sessionManager of CustomerServiceImpl object
      */
     @Autowired
     public CustomerServiceImpl(BeanValidator beanValidator, CompanyRepository companyRepository, CustomerRepository customerRepository, CouponRepository couponRepository, SessionManager sessionManager) {
@@ -54,7 +54,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     /**
      * Method to login Customer Service
-     * @param email email for login
+     *
+     * @param email    email for login
      * @param password password for login
      * @return returns session if succseeded to login and null if not
      * @throws CustomerServiceException exception
@@ -74,6 +75,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     /**
      * Method to logout Customer Service
+     *
      * @param token token for logout
      */
     @Override
@@ -83,16 +85,15 @@ public class CustomerServiceImpl implements CustomerService {
 
     /**
      * Method to purchase coupon
+     *
      * @param customerId customer id
-     * @param coupon coupon to purchase
+     * @param coupon     coupon to purchase
      * @throws CustomerServiceException exception
-     * @throws InvalidCouponException exception
+     * @throws InvalidCouponException   exception
      */
     @Override
     public void purchaseCoupon(int customerId, Coupon coupon) throws CustomerServiceException, InvalidCouponException {
-        if (!beanValidator.validate(coupon)) {
-            throw new InvalidCouponException();
-        }
+        beanValidator.validate(coupon);
         try {
             Coupon couponInDb = couponRepository.getOne(coupon.getId());
             Customer customer = customerRepository.getOne(customerId);
@@ -119,13 +120,15 @@ public class CustomerServiceImpl implements CustomerService {
             customer.getCoupons().add(couponInDb);
             customerRepository.save(customer);
             couponInDb.setAmount(couponInDb.getAmount() - 1);
-            couponRepository.save(coupon);
+            couponRepository.save(couponInDb);
         } catch (RuntimeException e) {
             throw new CustomerServiceException("Something gone wrong when we tried to purchase coupon" + e.getMessage());
         }
     }
+
     /**
      * Method to get customer coupons by customer id
+     *
      * @param customerId customer id
      * @return List of coupons
      * @throws CustomerServiceException exception
@@ -138,10 +141,12 @@ public class CustomerServiceImpl implements CustomerService {
             throw new CustomerServiceException("Something gone wrong when we tried to get customer coupons" + e.getMessage());
         }
     }
+
     /**
      * Method to get customer coupons by customer id and category
+     *
      * @param customerId customer id for coupons
-     * @param category category
+     * @param category   category
      * @return List of coupons
      * @throws CustomerServiceException exception
      */
@@ -156,10 +161,12 @@ public class CustomerServiceImpl implements CustomerService {
             throw new CustomerServiceException("Something gone wrong when we tried to get customer coupons by category" + e.getMessage());
         }
     }
+
     /**
      * Method to get customer coupons by customer id and max price
+     *
      * @param customerId customer id for coupons
-     * @param maxPrice max price of the coupon
+     * @param maxPrice   max price of the coupon
      * @return List of coupons
      * @throws CustomerServiceException exception
      */
@@ -174,8 +181,10 @@ public class CustomerServiceImpl implements CustomerService {
             throw new CustomerServiceException("Something gone wrong when we tried to get customer coupons by max price" + e.getMessage());
         }
     }
+
     /**
      * Method to get customer details
+     *
      * @param customerId customer id to get details
      * @return details of the customer
      * @throws CustomerServiceException exception
@@ -186,6 +195,15 @@ public class CustomerServiceImpl implements CustomerService {
             return customerRepository.getOne(customerId);
         } catch (RuntimeException e) {
             throw new CustomerServiceException("Something gone wrong when we tried to get customer details" + e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Coupon> getAvailableCoupons() throws CustomerServiceException {
+        try {
+            return couponRepository.getCouponsByAmountGreaterThan(0);
+        } catch (RuntimeException e) {
+            throw new CustomerServiceException("Something gone wrong when we tried to get available coupons" + e.getMessage());
         }
     }
 }

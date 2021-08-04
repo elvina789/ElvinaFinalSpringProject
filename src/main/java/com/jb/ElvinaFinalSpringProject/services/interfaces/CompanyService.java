@@ -17,7 +17,7 @@ public interface CompanyService {
     /**
      * Method to login Company Service
      *
-     * @param email email for login
+     * @param email    email for login
      * @param password password for login
      * @return returns session if succseeded to login and null if not
      * @throws CompanyServiceException exception
@@ -100,4 +100,6 @@ public interface CompanyService {
      * @throws CompanyServiceException exception
      */
     Company getCompanyDetails(int companyId) throws CompanyServiceException;
+
+    Coupon getCompanyCoupon(int companyId, int couponId);
 }
